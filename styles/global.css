@@ -1,0 +1,149 @@
+/*
+**** ORANGE AND GREEN THEMES: ****
+beige bg: #F9C972
+brown font and outlines: #4E362F
+
+**** PURPLE THEME COLORS ****
+purplebg: #5C4297
+orange: #E58352
+purple font and outlines: #281C4F
+*/
+
+@font-face {
+  font-family: pixelFontMain;
+  src: url(../assets/fonts/BoldPixels.ttf);
+}
+
+@font-face {
+  font-family: pixelFontGothic;
+  src: url(../assets/fonts/Jacquard12-Regular.ttf);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.pixel-font-main {
+    font-family: pixelFontMain;
+}
+
+.pixel-font-gothic {
+    font-family: pixelFontGothic;
+}
+
+.button-main {
+    cursor: pointer;
+    background-color: #F9C972;
+    color: #4E362F;
+    font-size: 18px;
+}
+
+.button-main:active {
+    background-color: #D5AD63;
+}
+
+/* Used values 3 and 4 in the website generator*/
+.pixel-corners,
+.pixel-corners--wrapper {
+    clip-path: polygon(0px calc(100% - 6px),
+            3px calc(100% - 6px),
+            3px calc(100% - 3px),
+            6px calc(100% - 3px),
+            6px 100%,
+            calc(100% - 6px) 100%,
+            calc(100% - 6px) calc(100% - 3px),
+            calc(100% - 3px) calc(100% - 3px),
+            calc(100% - 3px) calc(100% - 6px),
+            100% calc(100% - 6px),
+            100% 6px,
+            calc(100% - 3px) 6px,
+            calc(100% - 3px) 3px,
+            calc(100% - 6px) 3px,
+            calc(100% - 6px) 0px,
+            6px 0px,
+            6px 3px,
+            3px 3px,
+            3px 6px,
+            0px 6px);
+    position: relative;
+}
+
+.pixel-corners {
+    border: 3px solid transparent;
+}
+
+.pixel-corners--wrapper {
+    width: fit-content;
+    height: fit-content;
+}
+
+.pixel-corners--wrapper .pixel-corners {
+    display: block;
+    clip-path: polygon(3px 6px,
+            6px 6px,
+            6px 3px,
+            calc(100% - 6px) 3px,
+            calc(100% - 6px) 6px,
+            calc(100% - 3px) 6px,
+            calc(100% - 3px) calc(100% - 6px),
+            calc(100% - 6px) calc(100% - 6px),
+            calc(100% - 6px) calc(100% - 3px),
+            6px calc(100% - 3px),
+            6px calc(100% - 6px),
+            3px calc(100% - 6px));
+}
+
+.pixel-corners::after,
+.pixel-corners--wrapper::after {
+    content: "";
+    position: absolute;
+    clip-path: polygon(0px calc(100% - 6px),
+            3px calc(100% - 6px),
+            3px calc(100% - 3px),
+            6px calc(100% - 3px),
+            6px 100%,
+            calc(100% - 6px) 100%,
+            calc(100% - 6px) calc(100% - 3px),
+            calc(100% - 3px) calc(100% - 3px),
+            calc(100% - 3px) calc(100% - 6px),
+            100% calc(100% - 6px),
+            100% 6px,
+            calc(100% - 3px) 6px,
+            calc(100% - 3px) 3px,
+            calc(100% - 6px) 3px,
+            calc(100% - 6px) 0px,
+            6px 0px,
+            6px 3px,
+            3px 3px,
+            3px 6px,
+            0px 6px,
+            0px 50%,
+            3px 50%,
+            3px 6px,
+            6px 6px,
+            6px 3px,
+            calc(100% - 6px) 3px,
+            calc(100% - 6px) 6px,
+            calc(100% - 3px) 6px,
+            calc(100% - 3px) calc(100% - 6px),
+            calc(100% - 6px) calc(100% - 6px),
+            calc(100% - 6px) calc(100% - 3px),
+            6px calc(100% - 3px),
+            6px calc(100% - 6px),
+            3px calc(100% - 6px),
+            3px 50%,
+            0px 50%);
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #4E362F;
+    display: block;
+    pointer-events: none;
+}
+
+.pixel-corners::after {
+    margin: -3px;
+}
