@@ -1,0 +1,16 @@
+.filter-image{
+    width: 150px;   
+    height: 150px;
+}
+
+#sidebar{
+    background-color: #394658;
+}
+
+#create-room{
+    background-color: #34465e;
+}
+
+body{
+    background-color: #4678a9;
+}
