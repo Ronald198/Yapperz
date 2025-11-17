@@ -35,15 +35,15 @@ $(function () {
     bgImg.src = "../../assets/images/backgrounds/simplePark.jpg";
     let bgImgLoaded = false;
     bgImg.addEventListener("load", () => { bgImgLoaded = true; });
-    // Avatar model: { id, x, y, vx, vy, color, name, targetX, targetY, bubble, bubbleTime }
+    // Avatar model: { id, x, y, vx, vy, color, name, targetX, targetY, bubble, bubbleTime, isChibi, imgIndex }
     const avatars = {};
     let lastId = 0;
 
     // Create local player
-    const me = createAvatar("me", canvas.width / 2, canvas.height / 2, "#2a7ae2");
-    const bri = createAvatar("bri", canvas.width / 2 + 40, canvas.height / 2, "#2a7ae2");
-    const gezi = createAvatar("gezi", canvas.width / 2 + 80, canvas.height / 2, "#2a7ae2");
-    const roni = createAvatar("roni", canvas.width / 2 + 120, canvas.height / 2, "#2a7ae2");
+    const me = createAvatar("me", canvas.width / 2, canvas.height / 2);
+    const bri = createAvatar("bri", canvas.width / 2 + 40, canvas.height / 2);
+    const gezi = createAvatar("gezi", canvas.width / 2 + 80, canvas.height / 2);
+    const roni = createAvatar("roni", canvas.width / 2 + 120, canvas.height / 2);
     $("#me-id").text(me.id);
 
     // keyboard input state for local player
@@ -253,7 +253,7 @@ $(function () {
             const ch = canvas.height;
             const scale = Math.max(cw / iw, ch / ih);
             const sw = iw * 1.5;
-            const sh = ih * 1;
+            const sh = ih * 1.2;
             const dx = (cw - sw) / 2;
             const dy = (ch - sh) / 2;
             ctx.drawImage(bgImg, dx, dy, sw, sh);
