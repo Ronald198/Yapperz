@@ -1,0 +1,30 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+#game-wrap {
+    position: relative;
+    width: 100%;
+    height: 80vh;
+    background: #7cc26b;
+    overflow: hidden;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#ui {
+    padding: 12px;
+    background: #eee;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+#new-btn {
+    padding: 8px 12px;
+}
