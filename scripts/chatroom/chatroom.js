@@ -297,7 +297,7 @@ $(function () {
         }
 
         // name label
-        ctx.font = "12px Arial";
+        ctx.font = "14px pixelFontMain";
         ctx.textAlign = "center";
         ctx.fillStyle = "#000";
         ctx.fillText(a.name, a.x, a.y + s * 1.1);
@@ -309,18 +309,18 @@ $(function () {
     }
 
     function drawBubble(x, y, text) {
-        ctx.font = "14px Arial";
+        ctx.font = "16px pixelFontMain";
         const padding = 8;
         const metrics = ctx.measureText(text);
         const w = metrics.width + padding * 2;
-        const h = 24;
+        const h = 22;
         // bubble bg
         ctx.fillStyle = "white";
-        roundRect(ctx, x - w / 2, y - h - 10, w, h, 6, true, false);
+        roundRect(ctx, x - w / 2, y - h - 8, w, h, 6, true, false);
         // border
         ctx.strokeStyle = "#222";
         ctx.lineWidth = 2;
-        roundRect(ctx, x - w / 2, y - h - 10, w, h, 6, false, true);
+        roundRect(ctx, x - w / 2, y - h - 8, w, h, 6, false, true);
         // text
         ctx.fillStyle = "#000";
         ctx.textAlign = "center";
