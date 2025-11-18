@@ -1,4 +1,6 @@
 $(function () {
+    // === DOM elements setup ===
+    const chatTextfield = $("#chat-textfield");
     const canvas = document.getElementById("world");
     const ctx = canvas.getContext("2d");
     function resize() {
@@ -8,7 +10,13 @@ $(function () {
     $(window).on("resize", resize);
     resize();
 
-    // preload avatar images once (two options) and reuse
+    // === game settings ===
+    var showNames = true;
+    var showTextBubbles = true;
+    var mute = true;
+
+    // === game state ===
+    // preload avatar images once and reuse (temp derisa t behet backendi)
     const avatarImgPaths = [
         "../../assets/images/avatars/batmanAvatar.png",
         "../../assets/images/avatars/boyAvatar1.png",
@@ -30,7 +38,7 @@ $(function () {
         avatarImgsLoaded[i] = false;
         im.addEventListener("load", () => { avatarImgsLoaded[i] = true; });
     });
-    // preload background image and track loaded state
+    // preload background image and track loaded state (temp derisa t behet backendi)
     const bgImg = new Image();
     bgImg.src = "../../assets/images/backgrounds/simplePark.jpg";
     let bgImgLoaded = false;
@@ -39,7 +47,7 @@ $(function () {
     const avatars = {};
     let lastId = 0;
 
-    // Create local player
+    // Create local player (and some for fun)
     const me = createAvatar("me", canvas.width / 2, canvas.height / 2);
     const bri = createAvatar("bri", canvas.width / 2 + 40, canvas.height / 2);
     const gezi = createAvatar("gezi", canvas.width / 2 + 80, canvas.height / 2);
@@ -50,6 +58,7 @@ $(function () {
     const input = { left: false, right: false, up: false, down: false };
     // map keys: arrows and WASD
     window.addEventListener('keydown', (e) => {
+        if (chatTextfield.is(":focus")) return; // ignore when typing in chat
         switch (e.key) {
             case 'ArrowLeft': case 'a': case 'A': input.left = true; e.preventDefault(); break;
             case 'ArrowRight': case 'd': case 'D': input.right = true; e.preventDefault(); break;
@@ -58,6 +67,8 @@ $(function () {
         }
     });
     window.addEventListener('keyup', (e) => {
+        if (chatTextfield.is(":focus")) return; // ignore when typing in chat
+
         switch (e.key) {
             case 'ArrowLeft': case 'a': case 'A': input.left = false; break;
             case 'ArrowRight': case 'd': case 'D': input.right = false; break;
@@ -66,16 +77,15 @@ $(function () {
         }
     });
 
-    // Add random avatars (simulate joins)
+    // add random avatars (simulating joins)
     $("#new-btn").on("click", () => {
         const a = createAvatar("guest" + (++lastId),
             Math.random() * (canvas.width - 40) + 20,
             Math.random() * (canvas.height - 40) + 20,
         );
-        // For a real app: notify server of new avatar and broadcast to others.
     });
 
-    // Click to move local player
+    // click to move local player
     $("#game-wrap").on("click", function (e) {
         const rect = canvas.getBoundingClientRect();
         const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
@@ -85,10 +95,42 @@ $(function () {
         me.targetX = clickX;
         me.targetY = clickY;
         me.speed = 180; // px/sec
-        // For real-time: emit position/target to server
     });
 
-    // Example: simulate other players moving randomly (demo)
+    $("#toggle-mute-btn").on("click", function (e) {
+        mute = !mute;
+        $(this).attr("title", mute ? "Mute" : "Unmute");
+        $(this).children("i").first().toggleClass("hide-slash", mute);
+    });
+
+    $("#toggle-names-btn").on("click", function (e) {
+        showNames = !showNames;
+        $(this).attr("title", showNames ? "Hide names" : "Show names");
+        $(this).children("i").first().toggleClass("hide-slash", showNames);
+    });
+
+    $("#invite-btn").on("click", function (e) {
+        showToast({ text: "Room code copied", bgColor: "#F9C972", hideAfter: 3000 });
+    });
+
+    $("#toggle-chat-btn").on("click", function (e) {
+        showTextBubbles = !showTextBubbles;
+        $(this).attr("title", showTextBubbles ? "Hide chat" : "Show chat");
+        $(this).children("i").first().toggleClass("hide-slash", showTextBubbles);
+    });
+
+    $("#fullscreen-btn").on("click", function (e) {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+            $(this).children("i").first().addClass("hide-slash");
+        }
+        else {
+            document.exitFullscreen();
+            $(this).children("i").first().removeClass("hide-slash");
+        }
+    });
+
+    // simulating other players moving randomly (demo)
     setInterval(() => {
         Object.values(avatars).forEach(a => {
             if (a === me) return;
@@ -100,11 +142,33 @@ $(function () {
         });
     }, 1800);
 
-    // Example: create chat bubble for demonstration
+    window.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !chatTextfield.is(":focus")) {
+            input.right = 0;
+            input.left = 0;
+            input.down = 0;
+            input.up = 0;
+            chatTextfield.focus();
+            e.preventDefault();
+        }
+    });
+
+    chatTextfield.on("keydown", function (e) {
+        if (e.key === "Enter") {
+            const text = chatTextfield.val().trim();
+            if (text.length > 0) {
+                showBubble(me, text);
+                chatTextfield.val("");
+            }
+        }
+    });
+
+    // create chat bubble for demonstration RANDOMLY BECAUSE WE HAVE NO BACK END YET
     setInterval(() => {
         const arr = Object.values(avatars);
         if (!arr.length) return;
         const pickAvatar = arr[Math.floor(Math.random() * arr.length)];
+        if (pickAvatar === me) return; // skip local player
         phrases = [
             "Hello!",
             "Yo Yo!",
@@ -144,10 +208,12 @@ $(function () {
     }
     requestAnimationFrame(loop);
 
-    // === functions ===
+    // === functions for game ===
     function createAvatar(name, x, y) {
         const id = "id_" + Math.random().toString(36).slice(2, 9);
         var imgIndex = Math.floor(Math.random() * (avatarImgs.length - 3));
+
+        // do hiqen pas midtermi </3
         var isChibi = false;
         if (name == 'bri') {
             imgIndex = 7;
@@ -161,6 +227,7 @@ $(function () {
             imgIndex = 9;
             isChibi = true;
         }
+
         const a = {
             id, name, x, y, vx: 0, vy: 0,
             targetX: x, targetY: y, speed: 0,
@@ -183,22 +250,31 @@ $(function () {
             const a = avatars[id];
             // keyboard control for local player: WASD / arrows
             if (a === me) {
-                const mx = (input.right ? 1 : 0) - (input.left ? 1 : 0);
-                const my = (input.down ? 1 : 0) - (input.up ? 1 : 0);
+                const mx = (input.right ? 1 : 0) - (input.left ? 1 : 0); // 1 when pressing right, -1 when pressing left
+                const my = (input.down ? 1 : 0) - (input.up ? 1 : 0); // 1 when pressing down, -1 when pressing up
                 if (mx !== 0 || my !== 0) {
                     const len = Math.hypot(mx, my) || 1;
-                    const speed = a.speed || 160; // px/sec when using keyboard
+                    const speed = a.speed || 180; // px/sec when using keyboard
                     const vx = (mx / len) * speed;
                     const vy = (my / len) * speed;
-                    a.x += vx * dt;
-                    a.y += vy * dt;
+
+                    // update position with boundary checks
+                    if ((vx > 0 || a.x > 20) && (vx < 0 || a.x < canvas.width - 20)) {
+                        a.x += vx * dt;
+                    }
+                    if ((vy > 0 || a.y > 20) && (vy < 0 || a.y < canvas.height - 20)) {
+                        a.y += vy * dt;
+                    }
+
                     a.vx = vx; a.vy = vy;
                     // keep target in sync so other logic doesn't fight keyboard
                     a.targetX = a.x;
                     a.targetY = a.y;
-                } else {
-                    // fall back to target-based movement when no keys pressed
-                    if (a.targetX == null || a.targetY == null) { a.vx = a.vy = 0; }
+                }
+                else { // fall back to target-based movement when no keys pressed
+                    if (a.targetX == null || a.targetY == null) {
+                        a.vx = a.vy = 0;
+                    }
                     else {
                         const dx = a.targetX - a.x;
                         const dy = a.targetY - a.y;
@@ -210,14 +286,21 @@ $(function () {
                             a.x += vx * dt;
                             a.y += vy * dt;
                             a.vx = vx; a.vy = vy;
-                        } else { a.vx = a.vy = 0; }
+                        }
+                        else {
+                            a.vx = a.vy = 0;
+                        }
                     }
                 }
-            } else {
-                if (a.targetX == null || a.targetY == null) continue;
+            }
+            else {
+                if (a.targetX == null || a.targetY == null)
+                    continue;
+
                 const dx = a.targetX - a.x;
                 const dy = a.targetY - a.y;
                 const dist = Math.hypot(dx, dy);
+
                 if (dist > 2) {
                     const speed = a.speed || 120; // px/sec
                     const vx = (dx / dist) * speed;
@@ -225,7 +308,8 @@ $(function () {
                     a.x += vx * dt;
                     a.y += vy * dt;
                     a.vx = vx; a.vy = vy;
-                } else {
+                }
+                else {
                     a.vx = a.vy = 0;
                 }
             }
@@ -252,13 +336,13 @@ $(function () {
             const cw = canvas.width;
             const ch = canvas.height;
             const scale = Math.max(cw / iw, ch / ih);
-            const sw = iw * 1.5;
-            const sh = ih * 1.2;
+            const sw = iw * scale;
+            var sh = ih * scale;
             const dx = (cw - sw) / 2;
             const dy = (ch - sh) / 2;
             ctx.drawImage(bgImg, dx, dy, sw, sh);
-        } else {
-            // fallback: simple ellipse ground
+        }
+        else { // simple ellipse ground if no bg image
             ctx.fillStyle = "#e6d0a4";
             ctx.beginPath();
             ctx.ellipse(canvas.width * 0.4, canvas.height * 0.6, canvas.width * 0.45, canvas.height * 0.2, 0, 0, Math.PI * 2);
@@ -297,13 +381,15 @@ $(function () {
         }
 
         // name label
-        ctx.font = "14px pixelFontMain";
-        ctx.textAlign = "center";
-        ctx.fillStyle = "#000";
-        ctx.fillText(a.name, a.x, a.y + s * 1.1);
+        if (showNames) {
+            ctx.font = "14px pixelFontMain";
+            ctx.textAlign = "center";
+            ctx.fillStyle = "#000";
+            ctx.fillText(a.name, a.x, a.y + s * 1.1);
+        }
 
         // bubble
-        if (a.bubble) {
+        if (a.bubble && showTextBubbles) {
             drawBubble(a.x, a.y - s * 0.9, a.bubble);
         }
     }
@@ -340,17 +426,23 @@ $(function () {
         if (stroke) ctx.stroke();
     }
 
-    // Expose functions for "server" updates (how you"d integrate sockets)
-    window.addRemoteAvatar = function (id, name, x, y, color) {
-        avatars[id] = { id, name, x, y, vx: 0, vy: 0, color, targetX: x, targetY: y, size: 28, bubble: null, bubbleTime: 0 };
-    };
-    window.updateRemoteAvatar = function (id, data) {
-        const a = avatars[id];
-        if (!a) return;
-        if (data.x !== undefined) a.x = data.x;
-        if (data.y !== undefined) a.y = data.y;
-        if (data.targetX !== undefined) a.targetX = data.targetX;
-        if (data.targetY !== undefined) a.targetY = data.targetY;
-        if (data.bubble) showBubble(a, data.bubble, data.bubbleTime || 3000);
-    };
+    function showToast(opts) {
+        // remove any existing toast elements created by the plugin
+        $(".jq-toast-wrap").find(".jq-toast-single, .jq-toast").remove();
+
+        const defaults = {
+            text: opts.text || "",
+            showHideTransition: opts.showHideTransition || "fade",
+            bgColor: opts.bgColor || "#333",
+            textColor: opts.textColor || "#4E362F",
+            allowToastClose: false,
+            hideAfter: typeof opts.hideAfter === "number" ? opts.hideAfter : 4000,
+            stack: 1,                // ensure plugin-level stack is 1
+            textAlign: opts.textAlign || "left",
+            position: opts.position || "bottom-center",
+            loader: opts.loader !== undefined ? opts.loader : false
+        };
+
+        $.toast(defaults);
+    }
 });

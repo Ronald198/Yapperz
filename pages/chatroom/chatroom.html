@@ -21,24 +21,27 @@
     <div id="bottom-field">
         <div id="bottom-field-buttons">
             <a id="leave-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Leave room" href="../lobby/lobby.html"><i class="fa fa-sign-out" aria-hidden="true"></i></a>
-            <button id="mute-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Mute / Unmute"><i class="fa fa-volume-up" aria-hidden="true"></i></button>
-            <button id="toggle-chat-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Show / Hide Chat"><i class="fa fa-comments" aria-hidden="true"></i></button>
-            <button id="emoji-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Emojis"><i class="fa fa-smile" aria-hidden="true"></i></button>
-            <button id="invite-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Invite"><i class="fa fa-link" aria-hidden="true"></i></button>
-            <button id="toggle-names-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Toggle Names"><i class="fa fa-font" aria-hidden="true"></i></button>
+            <button id="toggle-mute-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Mute"><i class="fa fa-volume-up hide-slash" aria-hidden="true"></i></button>
+            <button id="toggle-chat-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Hide Chat"><i class="fa fa-comments hide-slash" aria-hidden="true"></i></button>
+            <button id="toggle-names-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Hide Names"><i class="fa fa-font hide-slash"></i></button>
+            <button id="invite-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Invite friends"><i class="fa fa-link" aria-hidden="true"></i></button>
+            <!-- Pas midtermi kur t behet backendi for managing game state values -->
             <button id="settings-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Settings"><i class="fa fa-cog" aria-hidden="true"></i></button>
-            <!-- <button id="fullscreen-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Fullscreen"><i class="fa fa-expand" aria-hidden="true"></i></button> -->
+            <button id="fullscreen-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Fullscreen"><i class="fa fa-expand" aria-hidden="true"></i></button>
+            <!-- Do hiqet pas midtermi -->
             <button id="new-btn" class="pixel-corners button-main pixel-font-main">Add random avatar (simulate join)</button>
         </div>
-        <!-- <label class="pixel-font-main"> Current id: <span id="me-id"></span></label> -->
         <div id="chat-textfield-container">
             <label for="chat-textfield">Chat:</label>
-            <input type="text" class="pixel-corners" id="chat-textfield" placeholder="type something for the world..." name="chat">
+            <input type="text" class="pixel-corners" id="chat-textfield" placeholder="type something for the world..." name="chat" maxlength="60">
+            <!-- Pas midtermi kto -->
+            <!-- <button id="emoji-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Emojis"><i class="fa fa-smile" aria-hidden="true"></i></button> --> 
         </div>
     </div>
 
     <!-- SCRIPTS -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-toast-plugin@1.3.2/dist/jquery.toast.min.js"></script>
     <script src="../../scripts/chatroom/chatroom.js"></script>
 </body>
 

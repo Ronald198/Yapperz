@@ -1,13 +1,8 @@
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-}
-
 #game-wrap {
     position: relative;
     width: 100%;
     height: 90vh;
-    background: #7cc26b;
+    background: #828482;
     overflow: hidden;
 }
 
@@ -20,7 +15,7 @@ canvas {
 #bottom-field {
     height: 10vh;
     padding: 12px;
-    background: var(--bg);
+    background: linear-gradient(180deg, var(--text), var(--bg));
     display: flex;
     gap: 8px;
     align-items: center;
@@ -39,6 +34,23 @@ canvas {
     font-size: 16px;
 }
 
+.hide-slash {
+    position: relative;
+}
+
+.hide-slash::after {
+    content: "/";
+    position: absolute;
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(20deg);
+    color: var(--text);
+    font-size: 2em;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    -webkit-text-stroke: 1px var(--bg); /* Outline width and color */
+}
+
 #new-btn {
     padding: 8px 12px;
 }
@@ -49,7 +61,7 @@ canvas {
     width: 50%;
 }
 
-#chat-textfield-container label{
+#chat-textfield-container label {
     margin-right: 8px;
     font-size: 20px;
     color: white;
@@ -59,4 +71,34 @@ canvas {
     padding: 6px;
     font-size: 18px;
     width: 100%;
+}
+
+/* #emoji-btn {
+    margin-left: 8px;
+} */
+
+
+/* ...existing code... */
+
+.jq-toast-wrap {
+    padding: 10px;
+    background-color: var(--bg);
+    border: var(--text) 3px solid;
+    position: absolute !important;      /* absolute so it sits inside the page flow (not fixed) */
+    bottom: 50px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: auto !important;
+    max-width: calc(100% - 40px) !important; /* prevent overflow on small screens */
+    display: flex;
+    justify-content: center;
+    pointer-events: none;                /* let clicks pass through except the toast itself */
+    z-index: 9999;
+}
+
+/* make the toast itself accept pointer events */
+.jq-toast-wrap .jq-toast-single,
+.jq-toast-wrap .jq-toast {
+    pointer-events: auto;
+    box-sizing: border-box;
 }
