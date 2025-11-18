@@ -297,6 +297,12 @@ $(function () {
                 if (a.targetX == null || a.targetY == null)
                     continue;
 
+                if (a === roni) {
+                    a.targetX = gezi.x - 15;
+                    a.targetY = gezi.y - 15;
+                    a.speed = gezi.speed;
+                }
+
                 const dx = a.targetX - a.x;
                 const dy = a.targetY - a.y;
                 const dist = Math.hypot(dx, dy);
@@ -437,12 +443,16 @@ $(function () {
             textColor: opts.textColor || "#4E362F",
             allowToastClose: false,
             hideAfter: typeof opts.hideAfter === "number" ? opts.hideAfter : 4000,
-            stack: 1,                // ensure plugin-level stack is 1
+            stack: 1, // ensure plugin-level stack is 1
             textAlign: opts.textAlign || "left",
             position: opts.position || "bottom-center",
             loader: opts.loader !== undefined ? opts.loader : false
         };
 
         $.toast(defaults);
+
+        setTimeout(() => {
+            $(".jq-toast-wrap").remove();
+        }, defaults.hideAfter + 300);
     }
 });
