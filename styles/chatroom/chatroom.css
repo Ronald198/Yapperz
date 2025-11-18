@@ -55,22 +55,31 @@ canvas {
     padding: 8px 12px;
 }
 
-#chat-textfield-container {
+#bottom-field-chat {
     display: flex;
     align-items: center;
     width: 50%;
 }
 
-#chat-textfield-container label {
+#bottom-field-chat label {
     margin-right: 8px;
     font-size: 20px;
     color: white;
+    letter-spacing: 3px;
+    text-shadow: -1.5px -1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px 1.5px 0 #000;
+    /* -webkit-text-stroke: #000 1px; */
+}
+
+#chat-textfield-container {
+    width: 100%;
+    --border: #000;
 }
 
 #chat-textfield {
     padding: 6px;
     font-size: 18px;
     width: 100%;
+    outline: none;
 }
 
 /* #emoji-btn {

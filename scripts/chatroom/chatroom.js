@@ -297,12 +297,6 @@ $(function () {
                 if (a.targetX == null || a.targetY == null)
                     continue;
 
-                if (a === roni) {
-                    a.targetX = gezi.x - 15;
-                    a.targetY = gezi.y - 15;
-                    a.speed = gezi.speed;
-                }
-
                 const dx = a.targetX - a.x;
                 const dy = a.targetY - a.y;
                 const dist = Math.hypot(dx, dy);
