@@ -98,6 +98,7 @@ $(function () {
     });
 
     $("#toggle-mute-btn").on("click", function (e) {
+        // maybe later after midterm when we have sound effects
         mute = !mute;
         $(this).attr("title", mute ? "Mute" : "Unmute");
         $(this).children("i").first().toggleClass("hide-slash", mute);
@@ -176,7 +177,6 @@ $(function () {
             "How's it going?",
             "This place is cool!",
             "What's your favorite game?",
-            "lets get freaky!",
             "I love Yapperz!",
             "How are you guys",
             "mwhahahaha",
@@ -184,15 +184,21 @@ $(function () {
             "Have a great day!",
             "ca bot si kalut?",
             "Imma touch you!",
-            "lets get freaky!",
-            "i need a j*b",
+            "i need a job",
             "whats up?",
             "i love Yapperz!",
             ":3",
             "(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧",
             "!!!",
-            "**** u!",
-            "n*****!",
+            "AFK getting snacks",
+            "brb petting my cat",
+            "Pixel party anyone?",
+            "Type /dance for moves!",
+            "need coffee asap",
+            "drop your favorite emoji",
+            "this place needs music",
+            "new quest soon?",
+            "best chatroom ever!",
         ];
         const pickPhrase = phrases[Math.floor(Math.random() * phrases.length)];
         showBubble(pickAvatar, pickPhrase);
@@ -330,7 +336,7 @@ $(function () {
         ctx.fillStyle = "#7cc26b";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // background image (cover: preserve aspect ratio and crop to fill)
+        // background image (fill set to cover to preserve aspect ratio and crop to fill)
         if (bgImgLoaded) {
             const iw = bgImg.width;
             const ih = bgImg.height;

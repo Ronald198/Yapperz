@@ -48,7 +48,7 @@ canvas {
     font-size: 2em;
     font-family: 'Courier New', Courier, monospace;
     font-weight: bold;
-    -webkit-text-stroke: 1px var(--bg); /* Outline width and color */
+    -webkit-text-stroke: 1px var(--bg-btn); /* Outline width and color */
 }
 
 #new-btn {
