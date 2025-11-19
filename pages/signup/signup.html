@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yapperz | Sign up</title>
+    <link rel="shortcut icon" href="../../assets/images/avatars/pixelCat1.png" type="image/x-icon">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="../../styles/login_signup/login_signup.css">
+</head>
+
+<body>
+    <div class="form-container pixel-corners">
+        <div id="form-info">
+            <h1>Yapperz</h1>
+            <h4>Sign up for wonderful experience!</h4>
+        </div>
+
+        <form method="POST" id="form" autocomplete="off">
+            <div class="pixel-corners">
+                <input type="text" placeholder="Name" name="name" id="name-input-field" class="form-input-field">
+            </div>
+            <p class="error" id="nameErr"></p>
+            <br>
+            <div class="pixel-corners">
+                <input type="text" placeholder="Surname" name="surname" id="surname-input-field" class="form-input-field">
+            </div>
+            <p class="error" id="surnameErr"></p>
+            <br>
+            <div class="pixel-corners">
+                <input type="email" placeholder="Email" name="email" id="email-input-field" class="form-input-field">
+            </div>
+            <p class="error" id="emailErr"></p>
+            <br>
+            <div class="pixel-corners">
+                <input type="password" placeholder="Password" name="password" id="password-input-field" class="form-input-field">
+            </div>
+            <p class="error" id="passErr"></p>
+            <br>
+            <div class="pixel-corners">
+                <input type="password" placeholder="Confirm password" name="confpassword" id="confpassword-input-field"
+                    class="form-input-field">
+            </div>
+            <p class="error" id="confpassErr"></p>
+            <br>
+            <div class="terms">
+                <div id="form-checkbox-container">
+                    <p>I accept all Terms and Conditions:</p> <input type="checkbox" class="form-checkbox">
+                </div>
+            </div>
+            <p class="error" id="checkboxErr"></p>
+            <br>
+            <div class="pixel-corners--wrapper" id="login-signup-button-container">
+                <input type="submit" value="Sign up" id="login-signup-button">
+            </div>
+        </form>
+
+        <div id="login-signup-link-container">
+            <a href="../login/login.html" id="login-signup-link">Already have an account?</a>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../../scripts/signup/signup.js"></script>
+</body>
+
+</html>
