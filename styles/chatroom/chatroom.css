@@ -1,13 +1,8 @@
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-}
-
 #game-wrap {
     position: relative;
     width: 100%;
-    height: 80vh;
-    background: #7cc26b;
+    height: 90vh;
+    background: #828482;
     overflow: hidden;
 }
 
@@ -17,14 +12,99 @@ canvas {
     height: 100%;
 }
 
-#ui {
+#bottom-field {
+    height: 10vh;
     padding: 12px;
-    background: #eee;
+    background: linear-gradient(180deg, var(--text), var(--bg));
     display: flex;
     gap: 8px;
     align-items: center;
+    justify-content: space-between;
+}
+
+#bottom-field-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 10px;
+}
+
+.bottom-field-icon-button {
+    padding: 8px;
+    font-size: 16px;
+}
+
+.hide-slash {
+    position: relative;
+}
+
+.hide-slash::after {
+    content: "/";
+    position: absolute;
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(20deg);
+    color: var(--text);
+    font-size: 2em;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    -webkit-text-stroke: 1px var(--bg-btn); /* Outline width and color */
 }
 
 #new-btn {
     padding: 8px 12px;
+}
+
+#bottom-field-chat {
+    display: flex;
+    align-items: center;
+    width: 50%;
+}
+
+#bottom-field-chat label {
+    margin-right: 8px;
+    font-size: 20px;
+    color: white;
+    letter-spacing: 3px;
+    text-shadow: -1.5px -1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px 1.5px 0 #000;
+    /* -webkit-text-stroke: #000 1px; */
+}
+
+#chat-textfield-container {
+    width: 100%;
+    --border: #000;
+}
+
+#chat-textfield {
+    padding: 6px;
+    font-size: 18px;
+    width: 100%;
+    outline: none;
+}
+
+/* #emoji-btn {
+    margin-left: 8px;
+} */
+
+.jq-toast-wrap {
+    padding: 10px;
+    background-color: var(--bg);
+    border: var(--text) 3px solid;
+    position: absolute !important;
+    bottom: 50px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: auto !important;
+    max-width: calc(100% - 40px) !important; /* prevent overflow on small screens */
+    display: flex;
+    justify-content: center;
+    pointer-events: none; /* let clicks pass through except the toast itself */
+    z-index: 9999;
+}
+
+/* make the toast itself accept pointer events */
+.jq-toast-wrap .jq-toast-single,
+.jq-toast-wrap .jq-toast {
+    pointer-events: auto;
+    box-sizing: border-box;
 }
