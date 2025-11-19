@@ -34,6 +34,13 @@ body {
     color: var(--text);
 }
 
+.form-input-field:focus,
+.form-input-field:focus-visible {
+    outline: none;
+    background: rgba(0,0,0,0.05);
+}
+
+
 #form-checkbox-container {
     display: flex;
     align-items: center;
@@ -81,17 +88,24 @@ body {
 #login-signup-button {
     width: 5vw;
     background: none;
-    border: solid 2px;
     border-radius: 3px;
     font-size: 1vw;
     padding: 0.3vw;
     transition: 0.2s;
     cursor: pointer;
+    outline: none;
+}
+
+#login-signup-button:focus-visible {
+    background-color: var(--bg-btn);
+    color: #fff;
+    transform: translateY(-2px);
 }
 
 #login-signup-button:hover {
     background-color: var(--bg-btn);
     color: white;
+    transform: translateY(-2px);
 }
 
 #login-signup-link-container {
@@ -110,6 +124,7 @@ body {
 }
 
 .error {
+    margin-top: 2px;
     color: red;
     font-size: 1vw;
 }
