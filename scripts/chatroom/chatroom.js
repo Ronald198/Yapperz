@@ -154,6 +154,7 @@ $(function () {
     });
 
     chatTextfield.on("keydown", function (e) {
+        if (e.key === "Escape") { $(this).blur(); e.preventDefault(); return; }
         if (e.key === "Enter") {
             const text = chatTextfield.val().trim();
             if (text.length > 0) {
