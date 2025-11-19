@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Yapperz | Sign up</title>
+        
+        <!-- CSS -->
+        <link rel="stylesheet" href="../../styles/global.css">
+        <link rel="stylesheet" href="../../styles/signup/signup.css">
+    </head>
+
+    <body>
+        <div class="signup-container pixel-corners">
+            <div class="info">
+                <h1>Yapperz</h1>
+                <h4>Sing up for wonderful experience!</h4>
+            </div>
+
+            <form method="POST" id="form" autocomplete="off">
+                <div class="pixel-corners">
+                    <input type="text" placeholder="Name" name="name" required class="login-input-field">
+                </div>
+                <p class="error" id="nameErr"></p>
+                <br>
+                <div class="pixel-corners">
+                    <input type="text" placeholder="Surame" name="surname" required class="login-input-field">
+                </div>
+                <p class="error" id="surnameErr"></p>
+                <br>
+                <div class="pixel-corners">
+                    <input type="email" placeholder="Email" name="email" required class="login-input-field">
+                </div>
+                <p class="error" id="emailErr"></p>
+                <br>
+                <div class="pixel-corners">
+                    <input type="password" placeholder="Password" name="password" required class="login-input-field">
+                </div>
+                <p class="error" id="passErr"></p>
+                <br>
+                <div class="pixel-corners">
+                    <input type="password" placeholder="Confirm password" name="confpassword" required class="login-input-field">
+                </div>
+                <p class="error" id="confpassErr"></p>
+                <br>
+                <div class="terms">
+                I accept all Terms and Conditions: <input type="checkbox" required>
+                </div>
+                <br>
+                <div class="pixel-corners--wrapper" id="signup-button-container">
+                    <input type="submit" value="Sign up" id="signup-button">
+                </div>
+            </form>
+
+            <div class="login">
+                <a href="../login/login.html" id="login">Already have an account?</a>
+                <!-- <a href="home.php" id="login">Return to homepage</a> -->
+            </div>
+        </div>
+    </body>
+</html>
