@@ -1,0 +1,115 @@
+body {
+    font-family: pixelFontMain;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    padding: 2vw;
+    background-color: white;
+    border: solid 5px black;
+    color: var(--text);
+}
+
+#form-info {
+    text-align: center;
+}
+
+#form {
+    margin-top: 3vw;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-input-field {
+    background: none;
+    border: none;
+    font-size: 1.5vw;
+    width: 20vw;
+    padding: 5px;
+    color: var(--text);
+}
+
+#form-checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5vw;
+    font-size: 1vw;
+    color: var(--text);
+}
+
+.form-checkbox {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 1.2em;
+    height: 1.2em;
+    margin-bottom: 2px;
+    display: inline-block;
+    cursor: pointer;
+    border: 2px solid var(--text);
+    border-radius: 0;
+    position: relative;
+    vertical-align: middle;
+}
+
+.form-checkbox:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--border);
+}
+
+.form-checkbox:checked {
+    background: var(--bg-btn);
+    border-color: var(--text);
+}
+
+.form-checkbox:checked::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    background: var(--text);
+}
+
+#login-signup-button-container {
+    align-self: flex-end;
+}
+
+#login-signup-button {
+    width: 5vw;
+    background: none;
+    border: solid 2px;
+    border-radius: 3px;
+    font-size: 1vw;
+    padding: 0.3vw;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+#login-signup-button:hover {
+    background-color: var(--bg-btn);
+    color: white;
+}
+
+#login-signup-link-container {
+    padding-top: 5vw;
+    width: 100%;
+}
+
+#login-signup-link {
+    text-decoration: underline;
+    background: none;
+    border: none;
+    color: var(--text);
+    border-radius: 3px;
+    font-size: 1vw;
+    padding: 0.1vw;
+}
+
+.error {
+    color: red;
+    font-size: 1vw;
+}

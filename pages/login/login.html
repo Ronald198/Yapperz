@@ -1,40 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Yapperz | Log in</title>
 
-        <!-- CSS -->
-        <link rel="stylesheet" href="../../styles/global.css">
-        <link rel="stylesheet" href="../../styles/login/login.css">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yapperz | Log in</title>
 
-    <body>
-        <div class="login-container pixel-corners">
-            <div class="info">
-                <h1>Yapperz</h1>
-                <h4>Log in to your account</h4>
-            </div>
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="../../styles/login_signup/login_signup.css">
+</head>
 
-            <form method="POST" id="form" autocomplete="on">
-                <div class="pixel-corners">
-                    <input type="email" placeholder="Email" name="email" required class="login-input-field">
-                </div>
-                <br>
-                <div class="pixel-corners">
-                    <input type="password" placeholder="Password" name="password" required class="login-input-field">
-                </div>
-                <p class="error" id="wrong"></p>
-                <br>
-                <div class="pixel-corners--wrapper" id="login-button-container">
-                    <input type="submit" value="Log in" id="login-button">
-                </div>
-            </form>
-
-            <div class="signup-cont">
-                <a href="../signup/signup.html" id="signup">No account? Sign up for free!</a>
-            </div>
+<body>
+    <div class="form-container pixel-corners">
+        <div id="form-info">
+            <h1>Yapperz</h1>
+            <h4>Log in to your account</h4>
         </div>
-    </body>
+
+        <form method="POST" id="form" autocomplete="on">
+            <div class="pixel-corners">
+                <input type="email" placeholder="Email" name="email" required class="form-input-field">
+            </div>
+            <br>
+            <div class="pixel-corners">
+                <input type="password" placeholder="Password" name="password" required class="form-input-field">
+            </div>
+            <p class="error" id="wrong"></p>
+            <br>
+            <div class="pixel-corners--wrapper" id="login-signup-button-container">
+                <input type="submit" value="Log in" id="login-signup-button">
+            </div>
+        </form>
+
+        <div id="login-signup-link-container">
+            <a href="../signup/signup.html" id="login-signup-link">No account? Sign up for free!</a>
+        </div>
+    </div>
+</body>
+
 </html>
