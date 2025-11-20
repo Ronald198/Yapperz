@@ -189,7 +189,7 @@ function renderCategory() {
     
     category.options.forEach(option => {
         const btn = document.createElement('button');
-        btn.className = 'option-btn';
+        btn.className = 'option-btn pixel-corners';
         btn.textContent = option;
         
         if (filters[category.key] === option) {
@@ -222,7 +222,7 @@ function renderAvatars() {
     
     filteredAvatars.forEach((avatar, index) => {
         const item = document.createElement('div');
-        item.className = 'avatar-item';
+        item.className = 'avatar-item pixel-corners';
         
         if (selectedAvatar === avatar.src) {
             item.classList.add('selected');
