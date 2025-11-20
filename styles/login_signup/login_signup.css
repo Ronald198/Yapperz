@@ -1,0 +1,183 @@
+body {
+    font-family: pixelFontMain;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    /* Layered vibrant pixel-art inspired background */
+    background:
+        radial-gradient(circle at 25% 30%, rgba(229,131,82,0.35), transparent 60%),
+        radial-gradient(circle at 75% 70%, rgba(199,125,255,0.30), transparent 65%),
+        linear-gradient(135deg, #5C4297 0%, #281C4F 100%);
+    background-attachment: fixed;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Floating avatar decoration layer */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+        url("../../assets/images/avatars/pixelCat1.png") no-repeat 6% 14% / 90px 90px,
+        url("../../assets/images/avatars/girlAvatar2.png") no-repeat 92% 22% / 82px 82px,
+        url("../../assets/images/avatars/boyAvatar1.png") no-repeat 12% 78% / 88px 88px,
+        url("../../assets/images/avatars/pixelCat2.png") no-repeat 85% 75% / 74px 74px,
+        url("../../assets/images/avatars/girlAvatar1.png") no-repeat 50% 10% / 80px 80px,
+        url("../../assets/images/avatars/girlAvatar3.png") no-repeat 50% 88% / 86px 86px;
+    animation: floatAvatars 14s ease-in-out infinite;
+    opacity: 0.22;
+    filter: saturate(1.2) drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+}
+
+@keyframes floatAvatars {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+    100% { transform: translateY(0); }
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    padding: 2vw;
+    /* Glassmorphism: translucent layer over colorful backdrop */
+    background: rgba(255,255,255,0.18);
+    border: 4px solid;
+    color: var(--text);
+    backdrop-filter: blur(18px) saturate(1.25);
+    -webkit-backdrop-filter: blur(18px) saturate(1.25);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.4);
+    position: relative;
+    z-index: 0;
+}
+
+/* subtle inner gradient sheen */
+.form-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(145deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 38%, rgba(255,255,255,0.25) 70%, rgba(255,255,255,0.05) 100%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+#form-info {
+    text-align: center;
+}
+
+#form { 
+    margin-top: 3vw;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-input-field {
+    background: none;
+    border: none;
+    font-size: 1.5vw;
+    width: 20vw;
+    padding: 5px;
+    color: var(--text);
+}
+
+.form-input-field::placeholder {
+    color: rgba(0, 0, 0, 0.574);
+}
+
+.form-input-field:focus,
+.form-input-field:focus-visible {
+    outline: none;
+    background: rgba(0,0,0,0.05);
+}
+
+
+#form-checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5vw;
+    font-size: 1vw;
+    color: var(--text);
+}
+
+.form-checkbox {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 1.2em;
+    height: 1.2em;
+    margin-bottom: 2px;
+    display: inline-block;
+    cursor: pointer;
+    border: 2px solid var(--text);
+    border-radius: 0;
+    position: relative;
+    vertical-align: middle;
+}
+
+.form-checkbox:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--border);
+}
+
+.form-checkbox:checked {
+    background: var(--bg-btn);
+    border-color: var(--text);
+}
+
+.form-checkbox:checked::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    background: var(--text);
+}
+
+#login-signup-button-container {
+    align-self: flex-end;
+}
+
+#login-signup-button {
+    width: 5vw;
+    background: none;
+    border-radius: 3px;
+    font-size: 1vw;
+    padding: 0.3vw;
+    transition: 0.2s;
+    cursor: pointer;
+    outline: none;
+}
+
+#login-signup-button:focus-visible {
+    background-color: var(--bg-btn);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+#login-signup-button:hover {
+    background-color: var(--bg-btn);
+    color: white;
+    transform: translateY(-2px);
+}
+
+#login-signup-link-container {
+    padding-top: 5vw;
+    width: 100%;
+}
+
+#login-signup-link {
+    text-decoration: underline;
+    background: none;
+    border: none;
+    color: var(--text);
+    border-radius: 3px;
+    font-size: 1vw;
+    padding: 0.1vw;
+}
+
+.error {
+    margin-top: 2px;
+    color: red;
+    font-size: 1vw;
+}

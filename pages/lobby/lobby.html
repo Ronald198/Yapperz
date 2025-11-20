@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../styles/global.css" />
+    <link  href="../../styles/lobby/lobby.css" rel="stylesheet" />
+    <title>Yapperz-Lobby</title>
+    
+</head>
+<body>
+    <div id="room-nav-bar" class="pixel-corners" class="pixel-corners--wrapper">
+        <div id="welcome">
+            <label id="page-slogan">Start yappin'</label><br>
+            <label id="join-label" >Join randoms or initiate your own discussion</label>
+        </div>
+
+        <div id="room-init">
+            <button id="create-room" class="init-buttons" popovertarget="room-open" >Create Room</button>
+            <div id="room-open" class="popover" popover>
+                <h2>Create a room</h2><br>
+                <label>Name of room:</label><br>
+                <input type="text" id="room-name" name="room-name" placeholder="Enter room name"><br>
+                <label>Room description:</label><br>
+                <input type="text" id="room-description" name="room-description" placeholder="Enter room description"><br>
+                <label>Room theme:</label>
+                <select id="room-theme" name="room-theme">
+                    <option value="desert">Desert</option>
+                    <option value="sea">Sea</option>
+                    <option value="park">Park</option>
+                    <option value="temple">Temple</option>
+                </select>
+                <a href="../chatroom/chatroom.html">
+                    <button id="create-room-btn">Create</button>
+                </a>
+            </div>
+            <button id="enter-room" class="init-buttons" popovertarget="room-enter">Enter Room</button>
+            <div id="room-enter" class="popover" popover>
+                <h2>Enter a room</h2><br>
+                <label>Room code:</label><br>
+                <input type="text" id="room-code" name="room-code" placeholder="Enter room code"><br>
+                <a href="../chatroom/chatroom.html">
+                    <button id="enter-room-btn">Enter</button>
+                </a>
+                
+            </div>
+        </div>
+
+    </div>
+
+    <div id="body" class="pixel-corners" class="pixel-corners--wrapper">
+        <!-- <h1>Welcome to Yapperz!</h1>
+                
+        <room card examples -->
+        <div id="rooms" > 
+            
+            <div id="room0" class="room-card rooms pixel-corners" >
+                <div class="room-left">
+                    <div class="room-main">
+                        <h2 class="room-title">Room0</h2>
+                        <div class="room-description">
+                            <label class="room-des-label">About</label>
+                            <p>This is a room about nature!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="room-right">
+                    <div class="room-theme">
+                        <label>Room theme</label>
+                        <div class="theme-image-wrap">
+                            <img src="images/desert.png" alt="theme" class="theme-image">
+                        </div>
+                    </div>
+                    <a href="../chatroom/chatroom.html">
+                        <button class="join-room-btn">Join Room</button>
+                    </a>
+                </div>
+            </div>
+
+            <div id="room1" class="room-card rooms pixel-corners">
+                <div class="room-left">
+                    <div class="room-main">
+                        <h2 class="room-title">Room1</h2>
+                        <div class="room-description">
+                            <label class="room-des-label">About</label>
+                            <p>This is a room about coding!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="room-right">
+                    <div class="room-theme">
+                        <label>Room theme</label>
+                        <div class="theme-image-wrap">
+                            <img src="images/sea.jpg" alt="theme" class="theme-image">
+                        </div>
+                    </div>
+                    <a href="../chatroom/chatroom.html">
+                        <button class="join-room-btn">Join Room</button>
+                    </a>
+                </div>
+            </div>
+        
+            <div id="room2" class="room-card rooms pixel-corners">
+                <div class="room-left">
+                    <div class="room-main">
+                        <h2 class="room-title">Room2</h2>
+                        <div class="room-description">
+                            <label class="room-des-label">About</label>
+                            <p>This is a room about gaming!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="room-right">
+                    <div class="room-theme">
+                        <label>Room theme</label>
+                        <div class="theme-image-wrap">
+                            <img src="images/simplePark.jpg" alt="theme" class="theme-image">
+                        </div>
+                    </div>
+                    <a href="../chatroom/chatroom.html">
+                        <button class="join-room-btn">Join Room</button>
+                    </a>
+                    
+                </div>
+            </div>
+
+            <div id="room3" class="room-card rooms pixel-corners">
+                <div class="room-left">
+                    <div class="room-main">
+                        <h2 class="room-title">Room3</h2>
+                        <div class="room-description">
+                            <label class="room-des-label">About</label>
+                            <p>This is a room about gaming!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="room-right">
+                    <div class="room-theme">
+                        <label>Room theme</label>
+                        <div class="theme-image-wrap">
+                            <img src="images/temple.png" alt="theme" class="theme-image">
+                        </div>
+                    </div>
+                    <a href="../chatroom/chatroom.html">
+                        <button class="join-room-btn">Join Room</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        </div>
+
+    </div>
+
+    <div id="dashboard" class="pixel-corners" class="pixel-corners--wrapper">
+        
+        <div id="profile-link-div">
+            <a href="../profile/profile.html"><img src="images/pixelcat1.jpg" id="profile-icon"></a> 
+            <label for="profile-icon">Profile</label>
+        </div>    
+        <div id="filter-icons">
+            <label id="filter-icon-label">Filter Rooms</label>
+            <button id="filter1-btn" class="filters">
+                <img src="images/temple.png" id="filter1-img" class="filter-image" alt="temple">
+            </button>
+            <button id="filter2-btn" class="filters" >
+                <img src="images/desert.png" id="filter2-img" class="filter-image" alt="desert">
+            </button>
+            <button id="filter3-btn" class="filters">
+                <img src="images/sea.jpg" id="filter3-img" class="filter-image" alt="sea">
+            </button>
+            <button id="filter4-btn" class="filters">
+                <img src="images/simplePark.jpg" id="filter4-img" class="filter-image" alt="park">
+            </button>
+        </div> 
+    </div>
+
+    <script src="../../scripts/lobby/lobby.js" defer></script>
+</body>
+</html>
+
+
+<!-- old versions of rooms: -->
+
+
+            <!-- <div id="room2"class="rooms" >
+                <label>Room2</label>
+                <label>Room theme: </label>
+                <img src="images/mariostarpixel.jpeg" id="room2-img" class="filter-image">
+                <label>Room description: </label>
+                <p>This is a room about coding!</p>
+                <button class="join-room-btn">Join Room</button>
+            </div> -->
+        
+            <!-- <div id="room3"class="rooms" >
+                <label>Room2</label>
+                <label>Room theme: </label>
+                <img src="images/mariostarpixel.jpeg" id="room3-img" class="filter-image">
+                <label>Room description: </label>
+                <p>This is a room about coding!</p>
+                <button class="join-room-btn">Join Room</button>
+            </div> -->

@@ -1,0 +1,318 @@
+body{
+    /* gap: 20px; */
+    background-color: var(--bg);
+    display: grid;
+    min-height: 100vh;
+    margin: 20px;
+}
+
+.filter-image{ /*for the images inside the filters*/
+    width:100%;
+    max-width: 100px;
+    height: 100%;
+    max-height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+    size-adjust: 100%;
+}
+
+#dashboard{  /*dashboard but its actually the sidebar*/
+    position: fixed;
+    left: 16px;          
+    top: 16px;            
+    bottom: 16px;        
+    width: 10%;          
+    background-color: var(--bg-btn); 
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: center;
+    /* border-radius: 12px;   rounded corners */ /*trial & error*/
+    z-index: 1000;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    justify-content: flex-start;
+    margin-right: 10px;
+}
+
+#room-nav-bar{ /*name stuck here as well, it's actually the horizontal "banner" thingy*/
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    top: 16px;
+    right: 30px;
+    width: 85%;
+    height: 19%;
+    /* border-radius: 12px; */
+    background-color: var(--bg-btn);
+    align-content: center;
+    padding: 0;
+}
+
+#room-init{ 
+    /* background-color: aliceblue; */
+    width: fit-content;
+    height: 18%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    right: 40px;
+}
+
+
+.init-buttons{
+    width: 100%;
+    max-width: 150px;
+    border-color: var(--border);
+    border-width: 3px;
+    border-radius: 10px;
+    font-size: 17px;
+    background-color: #998ac8;
+    padding: 10px;
+    cursor: pointer;
+}
+
+#filter-icons{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 10%;
+    gap: 8px;
+    height: 60%;
+    padding: 0;
+    background: transparent;
+    position: fixed;
+    bottom: 5%;
+}
+
+
+.filters{
+    border-radius: 8px;
+    border-width: 5px;
+    height: 40%;
+    width: 60%;
+    size-adjust: 100%;
+    display: flex;
+    border-color: var(--border);
+    justify-content: center;
+    cursor: pointer;
+    background-color: var(--border);
+}
+
+#profile-icon{
+    width: 107%;
+    max-width: 150px;
+    height: 100%;
+    max-height: 90px;
+    border-radius: 50%;
+    /* object-fit: cover; */
+}
+
+#profile-link-div{
+    /* background-color: #8a8795; */
+    height: 20%;
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 3%;
+}
+
+
+#profile-label{
+    font-size: 18px;
+    color: var(--text-primary);
+    margin-top: 6px;
+    margin-left: 10%;
+}
+
+#welcome{
+    display: flex;
+    position: fixed;
+    top: 5.5%;
+    left: 20%;
+    width: 70%;
+    height: 14%;
+    /* background-color:brown; */
+    /* border-radius: 12px; */
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 20px;
+    flex-direction: column;
+}
+
+#join-label{
+    font-size: 18px;
+    color: var(--text-primary);
+}
+#page-slogan{
+    font-size: 35px;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 0;
+}
+
+#body{
+    margin-top: 10px;
+    background-color: #f1d0c0;
+    position: fixed;
+    right: 30px;               
+    bottom: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 85%;
+    height: 73%;
+    /* border-radius: 12px; */
+    margin-left: 10px;
+    padding: 20px;
+
+}
+
+#rooms {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-template-rows: auto auto;
+    position: fixed;
+    bottom: 32px;
+    gap: 12px;
+    padding: 5px;
+    justify-content:first baseline;
+    align-items: self-start;
+    width: 80%;
+    height: 68%; 
+}
+
+.room-card{
+    display: flex;
+    width: 100%;
+    max-width: 400px;
+    height: 100%;
+    max-height: 250px;
+    background-color: #998ac8; 
+    padding-left: 15px;
+    display: flex;
+    gap: 0;
+    align-items: center;
+    box-sizing: border-box;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.room-main{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+}
+
+.room-title{
+    margin-top: 2px;
+    font-size: 32px;
+    color: var(--text-primary);
+    letter-spacing: 1px;
+}
+
+.room-des-label{
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.room-description{
+    font-size: 14px;
+    line-height: 1;
+    max-width: 400px;
+    color: var(--text-secondary);
+}
+.room-right{
+    width: 180px;
+    min-width: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-right: 10px;
+}
+.room-theme label{
+    display: block;
+    font-size: 20px;;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.room-theme{
+    align-items: center;
+}
+.theme-image-wrap{
+    background: var(--border);
+    padding: 5px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+.theme-image{
+    width: 75px;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.join-room-btn{
+    background: #f1d0c0;
+    border-color: var(--border);
+    border-width: 3px;
+    border-radius: 10px;
+    padding: 8px 14px;
+    cursor: pointer;
+    /* box-shadow: 4px 6px 0 rgba(0,0,0,0.35); */
+    align-self: center;
+    font-weight: 600;
+}
+.rooms{
+  
+    /* keep for legacy selectors but avoid fixed positioning inside */
+    box-sizing: border-box;
+
+}
+.room-interaction{
+    display: none; /* old layout, not used by new card — remove or keep hidden */
+}
+
+.popover{
+    background-color: var(--bg-btn);
+    border: 3px solid var(--border);
+    border-radius: 12px;
+    padding: 15px;
+    width: fit-content;
+    max-width: 600px;
+    max-height: 270px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    position: fixed;
+    top: 45%;
+    left: 48%;
+
+}
+
+/* .room-description, .room-interaction{
+    margin: 10px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    width: 120px;
+    position: fixed;
+    align-items: center;
+    background-color: beige;
+
+} */

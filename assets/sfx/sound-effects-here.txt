@@ -1,0 +1,1 @@
+remove ts file when adding first sfx
