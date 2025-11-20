@@ -105,13 +105,12 @@ body{
 }
 
 #profile-icon{
-    width: 100%;
-    max-width: 100px;
+    width: 107%;
+    max-width: 150px;
     height: 100%;
-    max-height: 85px;
+    max-height: 90px;
     border-radius: 50%;
-    object-fit: cover;
-    
+    /* object-fit: cover; */
 }
 
 #profile-link-div{
