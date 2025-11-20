@@ -1,67 +1,5 @@
 const avatars = [
-    // //Original avatars
-    // {
-    //     src: "../../assets/images/avatars/batmanAvatar.png",
-    //     gender: "male",
-    //     hairColor: "black",
-    //     clothingStyle: "casual"
-    // },
-    // {
-    //     src: "../../assets/images/avatars/boyAvatar1.png",
-    //     gender: "male",
-    //     hairColor: "brunette",
-    //     clothingStyle: "casual"
-    // },
-    // {
-    //     src: "../../assets/images/avatars/girlAvatar1.png",
-    //     gender: "female",
-    //     hairColor: "blonde",
-    //     clothingStyle: "casual"
-    // },
-    // {
-    //     src: "../../assets/images/avatars/girlAvatar2.png",
-    //     gender: "female",
-    //     hairColor: "brunette",
-    //     clothingStyle: "cosy"
-    // },
-    // {
-    //     src: "../../assets/images/avatars/girlAvatar3.png",
-    //     gender: "female",
-    //     hairColor: "black",
-    //     clothingStyle: "casual"
-    // },
-    // {
-    //     src: "../../assets/images/avatars/pixelCat1.png",
-    //     gender: "male",
-    //     hairColor: "blonde",
-    //     clothingStyle: "casual"
-    // },
-    // {
-    //     src: "../../assets/images/avatars/pixelCat2.png",
-    //     gender: "female",
-    //     hairColor: "blonde",
-    //     clothingStyle: "casual"
-    // },
-    // {
-    //     src: "../../assets/images/avatars/bri.png",
-    //     gender: "female",
-    //     hairColor: "brunette",
-    //     clothingStyle: "casual"
-    // },
-    // {
-    //     src: "../../assets/images/avatars/gezi.png",
-    //     gender: "male",
-    //     hairColor: "black",
-    //     clothingStyle: "sportive"
-    // },
-    // {
-    //     src: "../../assets/images/avatars/roni.png",
-    //     gender: "male",
-    //     hairColor: "brunette",
-    //     clothingStyle: "casual"
-    // },
-    
-    // New boy avatars - Black hair (boy1-boy10)
+    // Boy avatars - black hair
     {
         src: "../../assets/images/avatars/boy1.png",
         gender: "male",
@@ -87,12 +25,6 @@ const avatars = [
         clothingStyle: "cosy"
     },
     {
-        src: "../../assets/images/avatars/boy5.png",
-        gender: "male",
-        hairColor: "black",
-        clothingStyle: "classic"
-    },
-    {
         src: "../../assets/images/avatars/boy6.png",
         gender: "male",
         hairColor: "black",
@@ -108,7 +40,7 @@ const avatars = [
         src: "../../assets/images/avatars/boy8.png",
         gender: "male",
         hairColor: "black",
-        clothingStyle: "sportive"
+        clothingStyle: "classic"
     },
     {
         src: "../../assets/images/avatars/boy9.png",
@@ -123,24 +55,12 @@ const avatars = [
         clothingStyle: "casual"
     },
     
-    // Brunette hair (boy13-boy18)
-    {
-        src: "../../assets/images/avatars/boy13.png",
-        gender: "male",
-        hairColor: "brunette",
-        clothingStyle: "sportive"
-    },
+    // Boy avatars - Brunette hair
     {
         src: "../../assets/images/avatars/boy14.png",
         gender: "male",
         hairColor: "brunette",
         clothingStyle: "cosy"
-    },
-    {
-        src: "../../assets/images/avatars/boy15.png",
-        gender: "male",
-        hairColor: "brunette",
-        clothingStyle: "casual"
     },
     {
         src: "../../assets/images/avatars/boy16.png",
@@ -161,7 +81,7 @@ const avatars = [
         clothingStyle: "sportive"
     },
     
-    // Blonde hair (boy19-boy21)
+    // Boy avatars - Blonde hair (boy19-boy21)
     {
         src: "../../assets/images/avatars/boy19.png",
         gender: "male",
@@ -178,6 +98,70 @@ const avatars = [
         src: "../../assets/images/avatars/boy21.png",
         gender: "male",
         hairColor: "blonde",
+        clothingStyle: "cosy"
+    },
+    
+    // Girl avatars - Black hair
+    {
+        src: "../../assets/images/avatars/girl1.png",
+        gender: "female",
+        hairColor: "black",
+        clothingStyle: "classic"
+    },
+     {
+        src: "../../assets/images/avatars/girl5.png",
+        gender: "female",
+        hairColor: "black",
+        clothingStyle: "cosy"
+    },
+     {
+        src: "../../assets/images/avatars/girl8.png",
+        gender: "female",
+        hairColor: "black",
+        clothingStyle: "casual"
+    },
+    // Girl avatars - Blonde hair
+    {
+        src: "../../assets/images/avatars/girl14.png",
+        gender: "female",
+        hairColor: "blonde",
+        clothingStyle: "casual"
+    },
+    {
+        src: "../../assets/images/avatars/girl16.png",
+        gender: "female",
+        hairColor: "blonde",
+        clothingStyle: "casual"
+    },
+    {
+        src: "../../assets/images/avatars/girl17.png",
+        gender: "female",
+        hairColor: "blonde",
+        clothingStyle: "casual"
+    },
+    // Girl avatars - Brunette hair
+    {
+        src: "../../assets/images/avatars/girl11.png",
+        gender: "female",
+        hairColor: "brunette",
+        clothingStyle: "sportive"
+    },
+    {
+        src: "../../assets/images/avatars/girl14.png",
+        gender: "female",
+        hairColor: "black",
+        clothingStyle: "cosy"
+    },
+    {
+        src: "../../assets/images/avatars/girl15.png",
+        gender: "female",
+        hairColor: "brunette",
+        clothingStyle: "classic"
+    },
+    {
+        src: "../../assets/images/avatars/girl9.png",
+        gender: "female",
+        hairColor: "brunette",
         clothingStyle: "cosy"
     }
 ];
@@ -260,7 +244,6 @@ function renderAvatars() {
         img.src = avatar.src;
         img.alt = 'Avatar';
         img.onerror = function() {
-            // Remove the entire box if image fails to load
             item.remove();
         };
         

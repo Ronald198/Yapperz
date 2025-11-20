@@ -19,6 +19,7 @@ body {
     display: flex;
     align-items: flex-start;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .dashboard h2 {
@@ -34,6 +35,7 @@ body {
     padding: 30px;
     display: flex;
     gap: 20px;
+    min-width: 0;
 }
 
 .left-section {
@@ -41,6 +43,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    min-width: 0;
 }
 
 .avatar-display {
@@ -50,7 +53,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 400px;
+    min-height: 300px;
+    flex: 1;
 }
 
 .avatar-frame {
@@ -61,13 +65,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 360px;
+    min-height: 250px;
     position: relative;
 }
 
 .avatar-frame img {
-    width: 300px;
-    height: 300px;
+    width: min(300px, 80%);
+    height: min(300px, 80%);
     object-fit: contain;
 }
 
@@ -81,9 +85,10 @@ body {
     background-color: var(--bg-btn);
     border-radius: 15px;
     padding: 20px;
-    min-height: 300px;
+    min-height: 280px;
     display: flex;
     flex-direction: column;
+    flex-shrink: 0;
 }
 
 .category-header {
@@ -114,7 +119,7 @@ body {
 .category-name {
     flex: 1;
     text-align: center;
-    font-size: 18px;
+    font-size: clamp(14px, 2vw, 18px);
     font-weight: bold;
     text-transform: uppercase;
     color: var(--text);
@@ -135,13 +140,13 @@ body {
     background-color: color-mix(in srgb, var(--bg-btn) 50%, white 50%);
     border: 3px solid transparent;
     border-radius: 10px;
-    padding: 20px;
+    padding: 10px;
     cursor: pointer;
     transition: all 0.3s;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: clamp(12px, 1.5vw, 16px);
     font-weight: 600;
     color: var(--text);
     text-transform: capitalize;
@@ -160,23 +165,25 @@ body {
 }
 
 .right-section {
-    width: 400px;
+    width: clamp(280px, 30vw, 400px);
     background-color: color-mix(in srgb, var(--bg) 40%, white 60%);
     border-radius: 15px;
     padding: 20px;
     overflow-y: auto;
+    flex-shrink: 0;
 }
 
 .avatar-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
     align-content: start;
 }
 
 .avatar-item {
     width: 100%;
-    height: 180px;
+    aspect-ratio: 1;
+    min-height: 140px;
     background-color: var(--border);
     border-radius: 10px;
     cursor: pointer;
@@ -191,7 +198,7 @@ body {
 .avatar-item img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .avatar-item:hover {
@@ -202,4 +209,98 @@ body {
 .avatar-item.selected {
     border-color: var(--border);
     box-shadow: 0 0 15px color-mix(in srgb, var(--border) 50%, transparent 50%);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .container {
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    .dashboard {
+        width: 150px;
+        padding: 20px 15px;
+    }
+    
+    .dashboard h2 {
+        font-size: 20px;
+    }
+    
+    .main-content {
+        padding: 20px;
+        gap: 15px;
+    }
+    
+    .right-section {
+        width: clamp(250px, 28vw, 350px);
+    }
+}
+
+@media (max-width: 968px) {
+    .container {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+    
+    .dashboard {
+        width: 100%;
+        padding: 15px;
+    }
+    
+    .main-content {
+        flex-direction: column;
+    }
+    
+    .right-section {
+        width: 100%;
+        max-height: 400px;
+    }
+    
+    .avatar-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .container {
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .main-content {
+        padding: 15px;
+    }
+    
+    .avatar-display {
+        min-height: 200px;
+    }
+    
+    .avatar-frame {
+        min-height: 180px;
+    }
+    
+    .avatar-frame img {
+        width: min(200px, 90%);
+        height: min(200px, 90%);
+    }
+    
+    .classification-section {
+        padding: 15px;
+        min-height: 250px;
+    }
+    
+    .options-container {
+        height: 200px;
+        gap: 10px;
+    }
+    
+    .avatar-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+    }
+    
+    .avatar-item {
+        min-height: 100px;
+    }
 }
