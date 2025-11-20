@@ -114,12 +114,6 @@ const avatars = [
         hairColor: "black",
         clothingStyle: "cosy"
     },
-     {
-        src: "../../assets/images/avatars/girl8.png",
-        gender: "female",
-        hairColor: "black",
-        clothingStyle: "casual"
-    },
     // Girl avatars - Blonde hair
     {
         src: "../../assets/images/avatars/girl14.png",
@@ -144,25 +138,19 @@ const avatars = [
         src: "../../assets/images/avatars/girl11.png",
         gender: "female",
         hairColor: "brunette",
-        clothingStyle: "sportive"
-    },
-    {
-        src: "../../assets/images/avatars/girl14.png",
-        gender: "female",
-        hairColor: "black",
-        clothingStyle: "cosy"
+        clothingStyle: "casual"
     },
     {
         src: "../../assets/images/avatars/girl15.png",
         gender: "female",
         hairColor: "brunette",
-        clothingStyle: "classic"
+        clothingStyle: "sportive"
     },
     {
         src: "../../assets/images/avatars/girl9.png",
         gender: "female",
         hairColor: "brunette",
-        clothingStyle: "cosy"
+        clothingStyle: "classic"
     }
 ];
 
