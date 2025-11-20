@@ -1,5 +1,7 @@
+// all available avatars in the system  
 const avatars = [
-    // Boy avatars - black hair
+    // each avatar has a gender, hair color, and clothing style 
+    // boy avatars - black hair
     {
         src: "../../assets/images/avatars/boy1.png",
         gender: "male",
@@ -55,7 +57,7 @@ const avatars = [
         clothingStyle: "casual"
     },
     
-    // Boy avatars - Brunette hair
+    // boy avatars - brunette hair
     {
         src: "../../assets/images/avatars/boy14.png",
         gender: "male",
@@ -81,7 +83,7 @@ const avatars = [
         clothingStyle: "sportive"
     },
     
-    // Boy avatars - Blonde hair (boy19-boy21)
+    // boy avatars - blonde hair
     {
         src: "../../assets/images/avatars/boy19.png",
         gender: "male",
@@ -101,20 +103,21 @@ const avatars = [
         clothingStyle: "cosy"
     },
     
-    // Girl avatars - Black hair
+    // girl avatars - black hair
     {
         src: "../../assets/images/avatars/girl1.png",
         gender: "female",
         hairColor: "black",
         clothingStyle: "classic"
     },
-     {
+    {
         src: "../../assets/images/avatars/girl5.png",
         gender: "female",
         hairColor: "black",
         clothingStyle: "cosy"
     },
-    // Girl avatars - Blonde hair
+
+    // girl avatars - blonde hair
     {
         src: "../../assets/images/avatars/girl14.png",
         gender: "female",
@@ -133,7 +136,8 @@ const avatars = [
         hairColor: "blonde",
         clothingStyle: "casual"
     },
-    // Girl avatars - Brunette hair
+
+    // girl avatars - brunette hair
     {
         src: "../../assets/images/avatars/girl11.png",
         gender: "female",
@@ -154,6 +158,8 @@ const avatars = [
     }
 ];
 
+  
+// used to switch between the available categories
 const categories = [
     {
         name: "GENDER",
@@ -172,14 +178,15 @@ const categories = [
     }
 ];
 
-let currentCategoryIndex = 0;
-let selectedAvatar = null;
+let currentCategoryIndex = 0; // keeps track of which category we're currently showing
+let selectedAvatar = null;    // stores the avatar the user picked
 let filters = {
     gender: null,
     hairColor: null,
     clothingStyle: null
 };
 
+// renders the current category (gender / hair color / style)
 function renderCategory() {
     const category = categories[currentCategoryIndex];
     document.getElementById('categoryName').textContent = category.name;
@@ -210,17 +217,20 @@ function renderCategory() {
     });
 }
 
+// shows all avatars that match the selected filters
 function renderAvatars() {
     const avatarGrid = document.getElementById('avatarGrid');
     avatarGrid.innerHTML = '';
     
+    // only keep avatars that match all active filters  
     const filteredAvatars = avatars.filter(avatar => {
         return (!filters.gender || avatar.gender === filters.gender) &&
                (!filters.hairColor || avatar.hairColor === filters.hairColor) &&
                (!filters.clothingStyle || avatar.clothingStyle === filters.clothingStyle);
     });
     
-    filteredAvatars.forEach((avatar, index) => {
+    // building the avatar grid
+    filteredAvatars.forEach(avatar => {
         const item = document.createElement('div');
         item.className = 'avatar-item pixel-corners';
         
@@ -231,9 +241,9 @@ function renderAvatars() {
         const img = document.createElement('img');
         img.src = avatar.src;
         img.alt = 'Avatar';
-        img.onerror = function() {
-            item.remove();
-        };
+
+        // for errors in image display 
+        img.onerror = () => item.remove();
         
         item.appendChild(img);
         
@@ -247,18 +257,20 @@ function renderAvatars() {
     });
 }
 
+// shows the selected avatar in the center
 function displayAvatar(src) {
     const avatarFrame = document.getElementById('avatarFrame');
     avatarFrame.classList.remove('empty');
     avatarFrame.innerHTML = `<img src="${src}" alt="Selected Avatar">`;
     
     const img = avatarFrame.querySelector('img');
-    img.onerror = function() {
+    img.onerror = () => {
         avatarFrame.classList.add('empty');
         avatarFrame.innerHTML = '';
     };
 }
 
+// handles switching categories 
 document.getElementById('prevCategory').addEventListener('click', () => {
     currentCategoryIndex = (currentCategoryIndex - 1 + categories.length) % categories.length;
     renderCategory();
@@ -269,6 +281,7 @@ document.getElementById('nextCategory').addEventListener('click', () => {
     renderCategory();
 });
 
+// calling functions 
 renderCategory();
 renderAvatars();
 
