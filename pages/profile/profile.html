@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yapperz | Profile</title>
+    
+    <link rel="shortcut icon" href="../../assets/images/avatars/pixelCat1.png" type="image/x-icon">
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet" href="../../styles/profile/profile.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fa-solid fa-comments"></i> Yapperz
+        </div>
+        <a href="../lobby/lobby.html" class="pixel-corners button-main back-btn">
+            <i class="fa fa-arrow-left"></i> Back to Lobby
+        </a>
+    </nav>
+
+    <!-- Profile Content -->
+    <div class="profile-container">
+        
+        <!-- Identity Column -->
+        <div class="pixel-corners">
+            <div class="card-content identity-card">
+                <div class="pixel-corners avatar-frame">
+                    <img src="../../assets/images/avatars/batmanAvatar.png" 
+                         onerror="this.src='https://via.placeholder.com/150/E58352/281C4F?text=NO+IMG'" 
+                         alt="User Avatar" 
+                         class="avatar-img">
+                </div>
+                
+                <div class="user-info-block">
+                    <div class="user-tag pixel-corners">MEMBER</div>
+                    <h1 class="user-name">PixelMaster99</h1>
+                    <p class="user-email">pixelmaster@yapperz.com</p>
+                </div>
+
+                <button class="pixel-corners button-main btn-outline" style="width: 100%; font-size: 14px;">
+                    <i class="fa fa-camera"></i> Change Avatar
+                </button>
+            </div>
+        </div>
+
+        <!-- Details Column -->
+        <div class="pixel-corners">
+            <div class="card-content details-section">
+                
+                <!-- Statistics -->
+                <div class="stats-section">
+                    <h2 class="section-title">Stats Board</h2>
+                    <div class="stats-grid">
+                        <div class="pixel-corners stat-box">
+                            <span class="stat-value">124</span>
+                            <span class="stat-label">Total Yaps</span>
+                        </div>
+                        <div class="pixel-corners stat-box">
+                            <span class="stat-value">12</span>
+                            <span class="stat-label">Friends</span>
+                        </div>
+                        <div class="pixel-corners stat-box">
+                            <span class="stat-value">Oct 23</span>
+                            <span class="stat-label">Joined</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Settings -->
+                <div class="settings-section">
+                    <h2 class="section-title">Account Details</h2>
+                    <form id="profile-form" class="settings-form">
+                        <div class="input-group">
+                            <label for="username">Display Name</label>
+                            <div class="pixel-corners">
+                                <input type="text" id="username" class="form-input" value="PixelMaster99" disabled style="width: 100%;">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="bio">Bio</label>
+                            <div class="pixel-corners">
+                                <input type="text" id="bio" class="form-input" value="Just yapping around..." disabled style="width: 100%;">
+                            </div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button type="button" id="edit-btn" class="pixel-corners button-main">
+                                <i class="fa fa-pencil"></i> Edit Profile
+                            </button>
+                            <button type="submit" id="save-btn" class="pixel-corners button-main" style="display: none;">
+                                <i class="fa fa-save"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <hr style="border: 1px dashed var(--border); width: 100%;">
+
+                <!-- Danger Zone -->
+                <div class="danger-zone" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>Log out of your session?</span>
+                    <a href="../login/login.html" class="pixel-corners button-main btn-danger" style="padding: 8px 15px; font-size: 14px;">
+                        <i class="fa fa-sign-out"></i> Logout
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="../../scripts/profile/profile.js"></script>
+</body>
+</html>
