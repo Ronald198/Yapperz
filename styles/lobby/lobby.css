@@ -6,7 +6,7 @@ body{
     margin: 20px;
 }
 
-.filter-image{
+.filter-image{ /*for the images inside the filters*/
     width:100%;
     max-width: 100px;
     height: 100%;
@@ -17,27 +17,26 @@ body{
     size-adjust: 100%;
 }
 
-#dashboard{
+#dashboard{  /*dashboard but its actually the sidebar*/
     position: fixed;
     left: 16px;          
     top: 16px;            
     bottom: 16px;        
     width: 10%;          
-
     background-color: var(--bg-btn); 
     padding: 4px;
     display: flex;
     flex-direction: column;
     gap: 0;
     align-items: center;
-    /* border-radius: 12px;   rounded corners */
+    /* border-radius: 12px;   rounded corners */ /*trial & error*/
     z-index: 1000;
     box-shadow: 0 6px 18px rgba(0,0,0,0.18);
     justify-content: flex-start;
     margin-right: 10px;
 }
 
-#room-nav-bar{
+#room-nav-bar{ /*name stuck here as well, it's actually the horizontal "banner" thingy*/
     display: flex;
     flex-direction: row;
     position: fixed;
@@ -51,7 +50,7 @@ body{
     padding: 0;
 }
 
-#room-init{
+#room-init{ 
     /* background-color: aliceblue; */
     width: fit-content;
     height: 18%;
@@ -193,10 +192,11 @@ body{
 }
 
 .room-card{
+    display: flex;
     width: 100%;
-    max-width: 500px;
+    max-width: 400px;
     height: 100%;
-    max-height: 300px;
+    max-height: 250px;
     background-color: #998ac8; 
     padding-left: 15px;
     display: flex;
@@ -288,6 +288,21 @@ body{
 }
 .room-interaction{
     display: none; /* old layout, not used by new card — remove or keep hidden */
+}
+
+.popover{
+    background-color: var(--bg-btn);
+    border: 3px solid var(--border);
+    border-radius: 12px;
+    padding: 15px;
+    width: fit-content;
+    max-width: 600px;
+    max-height: 270px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+
 }
 
 /* .room-description, .room-interaction{

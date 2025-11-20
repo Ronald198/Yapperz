@@ -9,9 +9,7 @@
     
 </head>
 <body>
-
     <div id="room-nav-bar" class="pixel-corners" class="pixel-corners--wrapper">
-
         <div id="welcome">
             <label id="page-slogan">Start yappin'</label><br>
             <label id="join-label" >Join randoms or initiate your own discussion</label>
@@ -19,11 +17,33 @@
 
         <div id="room-init">
             <button id="create-room" class="init-buttons" popovertarget="room-open" >Create Room</button>
-            <div id="room-open" popover>
-                <h2>Create a room</h2>
-                <p>create</p>
+            <div id="room-open" class="popover" popover>
+                <h2>Create a room</h2><br>
+                <label>Name of room:</label><br>
+                <input type="text" id="room-name" name="room-name" placeholder="Enter room name"><br>
+                <label>Room description:</label><br>
+                <input type="text" id="room-description" name="room-description" placeholder="Enter room description"><br>
+                <label>Room theme:</label>
+                <select id="room-theme" name="room-theme">
+                    <option value="desert">Desert</option>
+                    <option value="sea">Sea</option>
+                    <option value="park">Park</option>
+                    <option value="temple">Temple</option>
+                </select>
+                <a href="../chatroom/chatroom.html">
+                    <button id="create-room-btn">Create</button>
+                </a>
             </div>
-            <button id="enter-room" class="init-buttons">Enter Room</button>
+            <button id="enter-room" class="init-buttons" popovertarget="room-enter">Enter Room</button>
+            <div id="room-enter" class="popover" popover>
+                <h2>Enter a room</h2><br>
+                <label>Room code:</label><br>
+                <input type="text" id="room-code" name="room-code" placeholder="Enter room code"><br>
+                <a href="../chatroom/chatroom.html">
+                    <button id="enter-room-btn">Enter</button>
+                </a>
+                
+            </div>
         </div>
 
     </div>
@@ -31,10 +51,8 @@
     <div id="body" class="pixel-corners" class="pixel-corners--wrapper">
         <!-- <h1>Welcome to Yapperz!</h1>
                 
-        <label>Join a random room</label> -->
-
-
-        <div id="rooms" >
+        <room card examples -->
+        <div id="rooms" > 
             
             <div id="room0" class="room-card rooms" >
                 <div class="room-left">
@@ -53,7 +71,9 @@
                             <img src="images/desert.png" alt="theme" class="theme-image">
                         </div>
                     </div>
-                    <button class="join-room-btn">Join Room</button>
+                    <a href="../chatroom/chatroom.html">
+                        <button class="join-room-btn">Join Room</button>
+                    </a>
                 </div>
             </div>
 
@@ -74,7 +94,9 @@
                             <img src="images/sea.jpg" alt="theme" class="theme-image">
                         </div>
                     </div>
-                    <button class="join-room-btn">Join Room</button>
+                    <a href="../chatroom/chatroom.html">
+                        <button class="join-room-btn">Join Room</button>
+                    </a>
                 </div>
             </div>
         
@@ -95,9 +117,13 @@
                             <img src="images/simplePark.jpg" alt="theme" class="theme-image">
                         </div>
                     </div>
-                    <button class="join-room-btn">Join Room</button>
+                    <a href="../chatroom/chatroom.html">
+                        <button class="join-room-btn">Join Room</button>
+                    </a>
+                    
                 </div>
             </div>
+
             <div id="room3" class="room-card rooms">
                 <div class="room-left">
                     <div class="room-main">
@@ -115,7 +141,9 @@
                             <img src="images/temple.png" alt="theme" class="theme-image">
                         </div>
                     </div>
-                    <button class="join-room-btn">Join Room</button>
+                    <a href="../chatroom/chatroom.html">
+                        <button class="join-room-btn">Join Room</button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -142,14 +170,12 @@
                 <img src="images/sea.jpg" id="filter3-img" class="filter-image" alt="sea">
             </button>
             <button id="filter4-btn" class="filters">
-                <img src="images/simplePark.jpg" id="filter3-img" class="filter-image" alt="park">
+                <img src="images/simplePark.jpg" id="filter4-img" class="filter-image" alt="park">
             </button>
         </div> 
     </div>
 
-    
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="Yapperz/scripts/lobby/lobby.js" defer></script>
+    <script src="../../scripts/lobby/lobby.js" defer></script>
 </body>
 </html>
 
