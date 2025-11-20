@@ -1,7 +1,7 @@
 body {
     background-color: var(--bg);
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 .container {
@@ -36,6 +36,7 @@ body {
     display: flex;
     gap: 20px;
     min-width: 0;
+    min-height: 0;
 }
 
 .left-section {
@@ -44,6 +45,7 @@ body {
     flex-direction: column;
     gap: 20px;
     min-width: 0;
+    min-height: 0;
 }
 
 .avatar-display {
@@ -53,8 +55,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 300px;
-    flex: 1;
+    flex: 1 1 55%;
+    min-height: 0;
 }
 
 .avatar-frame {
@@ -85,10 +87,10 @@ body {
     background-color: var(--bg-btn);
     border-radius: 15px;
     padding: 20px;
-    min-height: 280px;
     display: flex;
     flex-direction: column;
-    flex-shrink: 0;
+    flex: 1 1 45%;
+    min-height: 0;
 }
 
 .category-header {
@@ -132,8 +134,9 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
-    height: 240px;
-    flex-shrink: 0;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
 }
 
 .option-btn {
@@ -214,6 +217,7 @@ body {
 /* Responsive Design */
 @media (max-width: 1200px) {
     .container {
+        height: auto;
         padding: 15px;
         gap: 15px;
     }
@@ -235,12 +239,26 @@ body {
     .right-section {
         width: clamp(250px, 28vw, 350px);
     }
+
+    .left-section {
+        min-height: auto;
+    }
+
+    .avatar-display,
+    .classification-section {
+        flex: initial;
+        min-height: auto;
+    }
+
+    .options-container {
+        overflow: visible;
+    }
 }
 
 @media (max-width: 968px) {
     .container {
         flex-direction: column;
-        overflow-y: auto;
+        overflow-y: visible;
     }
     
     .dashboard {
@@ -250,11 +268,17 @@ body {
     
     .main-content {
         flex-direction: column;
+        min-height: auto;
     }
     
     .right-section {
         width: 100%;
         max-height: 400px;
+    }
+
+    .left-section {
+        width: 100%;
+        min-height: auto;
     }
     
     .avatar-grid {
