@@ -75,6 +75,6 @@ $(function () {
         }
 
         // On successful signup, navigate to login so the user can sign in
-        window.location.href = "../../pages/lobby/lobby.html";
+        window.location.href = "../../index.html";
     });
 });
