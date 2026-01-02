@@ -37,7 +37,7 @@ $(function () {
         }
 
         // success navigate to lobby
-        window.location.href = "../../pages/lobby/lobby.html";
+        window.location.href = "../../index.html";
     });
 });
 
