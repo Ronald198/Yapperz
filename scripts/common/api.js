@@ -24,13 +24,13 @@
         }
     }
 
-    function getAuthHeaders() {
-        const session = getSession();
-        if (session && session.token) {
-            return { "Authorization": `Bearer ${session.token}` };
-        }
-        return {};
-    }
+    // function getAuthHeaders() {
+    //     const session = getSession();
+    //     if (session && session.token) {
+    //         return { "Authorization": `Bearer ${session.token}` };
+    //     }
+    //     return {};
+    // }
 
     function buildUrl(endpoint, query) {
         const base = config.apiBaseUrl.replace(/\/$/, "");
@@ -92,13 +92,13 @@
             method = "GET",
             data = null,
             headers = {},
-            requiresAuth = true,
+            // requiresAuth = true,
             query
         } = options;
 
         const finalHeaders = Object.assign(
             { "Content-Type": "application/json" },
-            requiresAuth ? getAuthHeaders() : {},
+            // requiresAuth ? getAuthHeaders() : {},
             headers
         );
 
