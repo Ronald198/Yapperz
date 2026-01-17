@@ -1,7 +1,7 @@
 $(function () {
     const api = window.YapperzAPI;
 
-    if (api.ensureAuthenticated()) {
+    if (api.getSession()) {
         window.location.href = "../../index.html";
         return;
     }

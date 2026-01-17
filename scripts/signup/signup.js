@@ -2,7 +2,7 @@ $(function () {
     const api = window.YapperzAPI;
     const DEFAULT_AVATAR = "boy1.png";
 
-    if (api.ensureAuthenticated()) {
+    if (api.getSession()) {
         window.location.href = "../../index.html";
         return;
     }

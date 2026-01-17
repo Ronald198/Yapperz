@@ -50,8 +50,17 @@
     function ensureAuthenticated({ redirectToLogin = true } = {}) {
         const session = getSession();
         if (!session) {
-            if (redirectToLogin) {
-                window.location.href = config.loginPage;
+            const currentPath = window.location.pathname.toLowerCase();
+            // Prevent redirect loop if already on login page
+            if (redirectToLogin && !currentPath.includes("/login.html")) {
+                // Dynamic path resolution:
+                // If in a sub-page (contains '/pages/'), go up one level (../login/login.html)
+                // If at root (index.html), go down (pages/login/login.html)
+                const loginPath = currentPath.includes("/pages/") 
+                    ? "../login/login.html" 
+                    : "pages/login/login.html";
+                    
+                window.location.href = loginPath;
             }
             return false;
         }
