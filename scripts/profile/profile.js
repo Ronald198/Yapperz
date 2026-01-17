@@ -1,5 +1,7 @@
-
 $(document).ready(function() {
+    // const api = window.YapperzAPI;
+    // api.ensureAuthenticated();
+
     $('#edit-btn').click(function() {
         // Enable inputs
         $('.form-input').prop('disabled', false);
@@ -26,5 +28,11 @@ $(document).ready(function() {
         $('#edit-btn').show();
 
         alert("Profile updated successfully!");
+    });
+
+    // Logout logic
+    $('.btn-danger').on('click', function(e) {
+        window.YapperzAPI.clearSession();
+        window.location.href = '../login/login.html';
     });
 });
