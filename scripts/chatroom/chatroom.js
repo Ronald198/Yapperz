@@ -19,12 +19,12 @@ $(function () {
     connection.onreconnecting(error => {
         console.assert(connection.state === signalR.HubConnectionState.Reconnecting);
 
-        document.getElementById("messageInput").disabled = true;
+        // document.getElementById("messageInput").disabled = true;
         
         // TODO: Place a semi transparent overlay to show status and wait reconnect
-        const li = document.createElement("li");
-        li.textContent = `Connection lost due to error "${error}". Reconnecting.`;
-        document.getElementById("messageList").appendChild(li);
+        // const li = document.createElement("li");
+        // li.textContent = `Connection lost due to error "${error}". Reconnecting.`;
+        // document.getElementById("messageList").appendChild(li);
     });
 
     connection.onclose(async () => {
@@ -34,9 +34,26 @@ $(function () {
     // Start the connection.
     start();
 
+    async function joinSignalRGroup(roomCode) {
+        try {
+            await connection.invoke("JoinRoomGroup", roomCode);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+    
+    async function leaveSignalRGroup(roomCode) {
+        try {
+            await connection.invoke("LeaveRoomGroup", roomCode);
+            console.log("Successfully left room group!");
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     async function sendMessage(message) {
         try {
-            await connection.invoke("SendMessage", me.id, message);
+            await connection.invoke("SendMessage", activeRoomCode, me.id, message);
         } catch (err) {
             console.error(err);
         }
@@ -51,6 +68,41 @@ $(function () {
                 // console.log("BBB");
                 showBubble(a, message);
             }
+        }
+    });
+
+    // Server will send the full user DTO when a new player joins.
+    connection.on("NewPlayerJoined", (user) => {
+        try {
+            console.log("NewPlayerJoined:", user);
+            if (!user || !user.id) return;
+
+            // If the joined user is the current session user, ensure `me` is set/updated
+            if (session && user.id === session.id) {
+                // create or update local avatar
+                const spawned = getSpawnPosition();
+                me = createAvatar(user, canvas.width / 2, canvas.height / 2);
+                avatars[user.id] = me;
+                showToast({ text: `${getDisplayName(user)} rejoined`, bgColor: "#5C4297", hideAfter: 2000 });
+                return;
+            }
+
+            // Avoid duplicates
+            if (avatars[user.id]) {
+                // update display name/avatar if needed
+                avatars[user.id].displayName = user.displayName || avatars[user.id].displayName;
+                avatars[user.id].avatarPath = AVATAR_ASSET_BASE + (user.avatarPath || "");
+                showBubble(avatars[user.id], `${getDisplayName(user)} joined`);
+                return;
+            }
+
+            const spawn = getSpawnPosition();
+            const a = createAvatar(user, spawn.x, spawn.y);
+            // store full avatarPath on created avatar
+            a.avatarPath = AVATAR_ASSET_BASE + (user.avatarPath || "");
+            showToast({ text: `${getDisplayName(user)} joined the room`, bgColor: "#5C4297", hideAfter: 2500 });
+        } catch (err) {
+            console.error("Error handling NewPlayerJoined", err);
         }
     });
 
@@ -88,6 +140,36 @@ $(function () {
     var me;
     loadRoomUsers(activeRoomCode);
 
+    // Ensure the SignalR connection is in the room group for this chatroom.
+    // If connection isn't started yet, start() will resolve automatically; call start() then join.
+    (async () => {
+        try {
+            // Ensure the connection is established without trying to start it when
+            // it's already in a non-disconnected state (connecting/reconnecting).
+            async function ensureConnected(timeoutMs = 5000) {
+                const State = signalR.HubConnectionState;
+                if (connection.state === State.Connected) return;
+                if (connection.state === State.Disconnected) {
+                    await connection.start();
+                    return;
+                }
+
+                // If connecting/reconnecting, wait until Connected or timeout
+                const startWait = Date.now();
+                while (connection.state !== State.Connected) {
+                    if (Date.now() - startWait > timeoutMs) throw new Error('Timed out waiting for SignalR connection');
+                    await new Promise(r => setTimeout(r, 100));
+                }
+            }
+
+            await ensureConnected();
+            await joinSignalRGroup(activeRoomCode);
+            console.log('Joined SignalR group for room', activeRoomCode);
+        } catch (err) {
+            console.warn('Could not join SignalR group automatically', err);
+        }
+    })();
+
     const bgImg = new Image();
     bgImg.src = "../../assets/images/backgrounds/simplePark.jpg"; // TODO: change to activeRoom.theme
     let bgImgLoaded = false;
@@ -118,8 +200,10 @@ $(function () {
     });
 
     $("#leave-btn").on("click", () => {
-        YapperzAPI.leaveRoom(activeRoomCode);
-        window.location.href = '../../index.html';
+        // best-effort: notify hub to leave group, then call API and go back
+        leaveSignalRGroup(activeRoomCode)
+            .finally(() => YapperzAPI.leaveRoom(activeRoomCode))
+            .finally(() => { window.location.href = '../../index.html'; });
     });
 
     // click to move local player
@@ -203,46 +287,6 @@ $(function () {
         }
     });
 
-    // create chat bubble for demonstration RANDOMLY BECAUSE WE HAVE NO BACK END YET
-    // setInterval(() => {
-    //     const arr = Object.values(avatars);
-    //     if (!arr.length) return;
-    //     const pickAvatar = arr[Math.floor(Math.random() * arr.length)];
-    //     if (pickAvatar === me) return; // skip local player
-    //     phrases = [
-    //         "Hello!",
-    //         "Yo Yo!",
-    //         "How's it going?",
-    //         "This place is cool!",
-    //         "What's your favorite game?",
-    //         "I love Yapperz!",
-    //         "How are you guys",
-    //         "mwhahahaha",
-    //         "Nice to meet you all!",
-    //         "Have a great day!",
-    //         "ca bot si kalut?",
-    //         "Imma touch you!",
-    //         "i need a job",
-    //         "whats up?",
-    //         "i love Yapperz!",
-    //         ":3",
-    //         "(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧",
-    //         "!!!",
-    //         "AFK getting snacks",
-    //         "brb petting my cat",
-    //         "Pixel party anyone?",
-    //         "Type /dance for moves!",
-    //         "need coffee asap",
-    //         "drop your favorite emoji",
-    //         "this place needs music",
-    //         "new quest soon?",
-    //         "best chatroom ever!",
-    //     ];
-    //     const pickPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-    //     showBubble(pickAvatar, pickPhrase);
-    //     sendMessage(pickAvatar.displayName, pickPhrase);
-    // }, 500);
-
     // animation loop
     let last = performance.now();
     function loop(now) {
@@ -255,7 +299,7 @@ $(function () {
     requestAnimationFrame(loop);
 
     // === functions for game ===
-    function loadRoomUsers(roomCode) {
+    function loadRoomUsers(roomCode) { // already joined players
         YapperzAPI.getRoomUsersByRoomCode(roomCode)
             .done(users => {
                 if (!Array.isArray(users)) {
@@ -388,6 +432,10 @@ $(function () {
                 if (a.bubbleTime <= 0) a.bubble = null;
             }
         }
+    }
+
+    function getDisplayName(user) {
+        return user.displayName;
     }
 
     function render() {
