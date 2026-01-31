@@ -67,7 +67,16 @@ $(function () {
 
         request.fail(err => {
             setLoading(false);
-            $passwordError.text(JSON.parse(err.message).title || "Unable to log in. Please try again.");
+            console.log(err);
+            if ("message" in err) {
+                $passwordError.text(JSON.parse(err.message).title || "Unable to log in. Please try again.");
+            }
+            else if ("title" in err) {
+                $passwordError.text(err.title);
+            }
+            else {
+                $passwordError.text("Unable to log in. Please try again.");
+            }
         });
 
         request.always(() => {

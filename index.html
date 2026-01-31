@@ -122,7 +122,7 @@
                         </div>
                     </div>
                     <a href="pages/chatroom/chatroom.html">
-                        <button class="join-room-btn">Join Room</button>
+                        <button class="join-room-btn" onclick="">Join Room</button>
                     </a>
                 </div>
             </div>
@@ -144,10 +144,7 @@
                             <img src="assets/images/backgrounds/simplePark.jpg" alt="theme" class="theme-image">
                         </div>
                     </div>
-                    <a href="pages/chatroom/chatroom.html">
-                        <button class="join-room-btn">Join Room</button>
-                    </a>
-                    
+                    <button class="join-room-btn" onclick="YapperzAPI.joinRoom('ABCDEF')">Join Room</button>
                 </div>
             </div>
 
@@ -180,9 +177,9 @@
 
     </div>
 
-    
-
-    <script src="../../scripts/lobby/lobby.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="scripts/common/api.js" defer></script>
+    <script src="scripts/lobby/lobby.js" defer></script>
 </body>
 </html>
 

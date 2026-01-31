@@ -85,6 +85,11 @@ $(function () {
         );
     });
 
+    $("#leave-btn").on("click", () => {
+        YapperzAPI.leaveRoom("ABCDEF");
+        window.location.href = '../../index.html';
+    });
+
     // click to move local player
     $("#game-wrap").on("click", function (e) {
         const rect = canvas.getBoundingClientRect();
