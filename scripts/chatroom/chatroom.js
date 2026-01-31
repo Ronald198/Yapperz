@@ -92,7 +92,6 @@ $(function () {
                 // update display name/avatar if needed
                 avatars[user.id].displayName = user.displayName || avatars[user.id].displayName;
                 avatars[user.id].avatarPath = AVATAR_ASSET_BASE + (user.avatarPath || "");
-                showBubble(avatars[user.id], `${getDisplayName(user)} joined`);
                 return;
             }
 
@@ -104,6 +103,11 @@ $(function () {
         } catch (err) {
             console.error("Error handling NewPlayerJoined", err);
         }
+    });
+
+    connection.on("PlayerLeft", (userId, displayName) => {
+        delete avatars[userId];
+        showToast({ text: `${displayName} left`, bgColor: "#5C4297", hideAfter: 2000 });
     });
 
     // === DOM elements setup ===
@@ -548,7 +552,7 @@ $(function () {
             text: opts.text || "",
             showHideTransition: opts.showHideTransition || "fade",
             bgColor: opts.bgColor || "#333",
-            textColor: opts.textColor || "#4E362F",
+            textColor: "#ffffff",
             allowToastClose: false,
             hideAfter: typeof opts.hideAfter === "number" ? opts.hideAfter : 4000,
             stack: 1, // ensure plugin-level stack is 1
