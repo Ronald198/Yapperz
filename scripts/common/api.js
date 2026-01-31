@@ -191,7 +191,7 @@
             const raw = localStorage.getItem(STORAGE_KEYS.activeRoom);
             return raw ? JSON.parse(raw) : null;
         } catch (err) {
-            console.warn("Failed to parse active room cache", err);
+            console.warn("Failed to parse active room cache", err); 
             return null;
         }
     }
