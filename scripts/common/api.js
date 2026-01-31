@@ -105,8 +105,6 @@
 
         const deferred = $.Deferred();
 
-        console.log(data);
-
         $.ajax({
             url: buildUrl(endpoint, query),
             method,
@@ -205,13 +203,21 @@
         return request(`/Chatroom/${encodeURIComponent(roomCode)}`);
     }
 
+    function getRoomUsersByRoomCode(roomCode) {
+        if (!roomCode) {
+            return $.Deferred().reject({ message: "Missing room code" }).promise();
+        }
+        
+        return request(`/Chatroom/${encodeURIComponent(roomCode)}/Users`);
+    }
+
     window.YapperzAPI = {
         // config,
         request,
         login,
         register,
         getUserById,
-        // listRooms,
+        getRoomUsersByRoomCode,
         getRoomByCode,
         // createRoom,
         joinRoom,

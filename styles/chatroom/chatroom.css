@@ -51,10 +51,6 @@ canvas {
     -webkit-text-stroke: 1px var(--bg-btn); /* Outline width and color */
 }
 
-#new-btn {
-    padding: 8px 12px;
-}
-
 #bottom-field-chat {
     display: flex;
     align-items: center;

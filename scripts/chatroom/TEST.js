@@ -15,6 +15,7 @@ $(function () {
     var showTextBubbles = true;
     var mute = true;
     const AVATAR_ASSET_BASE = "../../assets/images/avatars/";
+    const DEFAULT_AVATAR_SRC = `${AVATAR_ASSET_BASE}pixelCat1.png`;
 
     const session = YapperzAPI.getSession();
     if (!session) {
@@ -29,32 +30,29 @@ $(function () {
         return;
     }
 
-    var me;
-    loadRoomUsers(activeRoomCode);
-
     // === game state ===
     // preload avatar images once and reuse (temp derisa t behet backendi)
-    // const avatarImgPaths = [
-    //     "../../assets/images/avatars/batmanAvatar.png",
-    //     "../../assets/images/avatars/boyAvatar1.png",
-    //     "../../assets/images/avatars/girlAvatar1.png",
-    //     "../../assets/images/avatars/girlAvatar2.png",
-    //     "../../assets/images/avatars/girlAvatar3.png",
-    //     "../../assets/images/avatars/pixelCat1.png",
-    //     "../../assets/images/avatars/pixelCat2.png",
-    //     "../../assets/images/avatars/bri.png",
-    //     "../../assets/images/avatars/gezi.png",
-    //     "../../assets/images/avatars/roni.png",
-    // ];
-    // const avatarImgs = [];
-    // const avatarImgsLoaded = [];
-    // avatarImgPaths.forEach((p, i) => {
-    //     const im = new Image();
-    //     im.src = p;
-    //     avatarImgs[i] = im;
-    //     avatarImgsLoaded[i] = false;
-    //     im.addEventListener("load", () => { avatarImgsLoaded[i] = true; });
-    // });
+    const avatarImgPaths = [
+        "../../assets/images/avatars/batmanAvatar.png",
+        "../../assets/images/avatars/boyAvatar1.png",
+        "../../assets/images/avatars/girlAvatar1.png",
+        "../../assets/images/avatars/girlAvatar2.png",
+        "../../assets/images/avatars/girlAvatar3.png",
+        "../../assets/images/avatars/pixelCat1.png",
+        "../../assets/images/avatars/pixelCat2.png",
+        "../../assets/images/avatars/bri.png",
+        "../../assets/images/avatars/gezi.png",
+        "../../assets/images/avatars/roni.png",
+    ];
+    const avatarImgs = [];
+    const avatarImgsLoaded = [];
+    avatarImgPaths.forEach((p, i) => {
+        const im = new Image();
+        im.src = p;
+        avatarImgs[i] = im;
+        avatarImgsLoaded[i] = false;
+        im.addEventListener("load", () => { avatarImgsLoaded[i] = true; });
+    });
     // preload background image and track loaded state (temp derisa t behet backendi)
     const bgImg = new Image();
     bgImg.src = "../../assets/images/backgrounds/simplePark.jpg";
@@ -63,10 +61,16 @@ $(function () {
     // Avatar model: { id, x, y, vx, vy, color, name, targetX, targetY, bubble, bubbleTime, isChibi, imgIndex }
     const avatars = {};
     let lastId = 0;
+    let me = null;
 
-    // Create local player (and some for fun)
-    // const me = createAvatar("me", canvas.width / 2, canvas.height / 2);
-    // $("#me-id").text(me.id);
+    me = createAvatar(getDisplayName(session), canvas.width / 2, canvas.height / 2, {
+        avatarSrc: buildAvatarSrc(session.avatarPath),
+        userId: session.id,
+        isLocalPlayer: true
+    });
+    $("#me-id").text(getDisplayName(session));
+
+    loadRoomUsers(activeRoomCode);
 
     // keyboard input state for local player
     const input = { left: false, right: false, up: false, down: false };
@@ -91,13 +95,24 @@ $(function () {
         }
     });
 
+    // add random avatars (simulating joins)
+    $("#new-btn").on("click", () => {
+        const a = createAvatar("guest" + (++lastId),
+            Math.random() * (canvas.width - 40) + 20,
+            Math.random() * (canvas.height - 40) + 20,
+        );
+    });
+
     $("#leave-btn").on("click", () => {
-        YapperzAPI.leaveRoom("ABCDEF"); // TODO: replace with current rooms id
-        window.location.href = '../../index.html';
+        YapperzAPI.leaveRoom(activeRoomCode)
+            .always(() => {
+                window.location.href = '../../index.html';
+            });
     });
 
     // click to move local player
     $("#game-wrap").on("click", function (e) {
+        if (!me) return;
         const rect = canvas.getBoundingClientRect();
         const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
         const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
@@ -182,7 +197,7 @@ $(function () {
         if (!arr.length) return;
         const pickAvatar = arr[Math.floor(Math.random() * arr.length)];
         if (pickAvatar === me) return; // skip local player
-        phrases = [
+        const phrases = [
             "Hello!",
             "Yo Yo!",
             "How's it going?",
@@ -238,12 +253,15 @@ $(function () {
                 users.forEach((user, index) => {
                     if (!user) return;
                     if (user.id === session.id) {
-                        me = createAvatar(user, canvas.width / 2, canvas.height / 2);
+                        updateLocalAvatarFromUser(user);
                         return;
                     }
 
-                    const spawn = getSpawnPosition();
-                    createAvatar(user, spawn.x, spawn.y);
+                    const spawn = getSpawnPosition(index);
+                    createAvatar(getDisplayName(user), spawn.x, spawn.y, {
+                        avatarSrc: buildAvatarSrc(user.avatarPath),
+                        userId: user.id
+                    });
                 });
             })
             .fail(err => {
@@ -251,17 +269,65 @@ $(function () {
             });
     }
 
-    function getSpawnPosition() {
+    function updateLocalAvatarFromUser(user) {
+        if (!me || !user) return;
+        me.name = getDisplayName(user);
+        me.displayName = me.name;
+        const src = buildAvatarSrc(user.avatarPath);
+        setCustomAvatarImage(me, src);
+    }
+
+    function getSpawnPosition(index = 0) {
+        const padding = 60;
         return {
-            x: Math.random() * (canvas.width - 40) + 20,
-            y: Math.random() * (canvas.height - 40) + 20
+            x: padding + Math.random() * (canvas.width - padding * 2),
+            y: padding + Math.random() * (canvas.height - padding * 2)
         };
     }
 
-    function createAvatar(user, x, y) {
+    function getDisplayName(userLike) {
+        if (!userLike) return "Player";
+        return userLike.displayName || userLike.username || userLike.email || "Player";
+    }
+
+    function buildAvatarSrc(avatarPath) {
+        if (!avatarPath) return DEFAULT_AVATAR_SRC;
+        if (/^(https?:)?\/\//i.test(avatarPath) || avatarPath.startsWith("../") || avatarPath.startsWith("./") || avatarPath.startsWith("/")) {
+            return avatarPath;
+        }
+        return `${AVATAR_ASSET_BASE}${avatarPath}`;
+    }
+
+    function setCustomAvatarImage(avatar, src) {
+        if (!avatar || !src) return;
+        const img = new Image();
+        avatar.customImg = img;
+        avatar.customImgLoaded = false;
+        img.addEventListener("load", () => {
+            avatar.customImgLoaded = true;
+        });
+        img.addEventListener("error", () => {
+            avatar.customImgLoaded = false;
+        });
+        img.src = src;
+        if (img.complete) {
+            avatar.customImgLoaded = true;
+        }
+        avatar.avatarSrc = src;
+    }
+
+    function createAvatar(name, x, y, options = {}) {
+        const avatarId = options.userId ? `user_${options.userId}` : "id_" + Math.random().toString(36).slice(2, 9);
+        if (avatars[avatarId]) {
+            return avatars[avatarId];
+        }
+
+        var imgIndex = Math.floor(Math.random() * (avatarImgs.length - 3));
+        var isChibi = false;
+
         const a = {
-            id: user.id,
-            displayName: user.displayName,
+            id: avatarId,
+            name,
             x,
             y,
             vx: 0,
@@ -272,10 +338,17 @@ $(function () {
             bubble: null,
             bubbleTime: 0,
             size: 28,
-            avatarPath: AVATAR_ASSET_BASE + user.avatarPath
+            imgIndex,
+            isChibi,
+            userId: options.userId || null,
+            isLocalPlayer: !!options.isLocalPlayer
         };
-        console.log(a);
-        avatars[user.id] = a;
+
+        if (options.avatarSrc) {
+            setCustomAvatarImage(a, options.avatarSrc);
+        }
+
+        avatars[avatarId] = a;
         return a;
     }
 
@@ -406,24 +479,34 @@ $(function () {
         ctx.ellipse(a.x, a.y + s * 0.8, s * 0.6, s * 0.25, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        const img = new Image();
-        img.src = a.avatarPath;
-
-        // draw avatar image (if loaded) centered at avatar position
-        // if (typeof a.imgIndex === 'number') {
-            var drawW = s * 3;
-            var drawH = s * 2.6;
+        // draw avatar image (custom sprite preferred, fallback to preloaded set)
+        if (a.customImg && (a.customImgLoaded || a.customImg.complete)) {
+            const img = a.customImg;
+            let drawW = s * 2;
+            let drawH = s * 2.2;
             const dx = a.x - drawW / 2;
             const dy = a.y - drawH + s * 0.9;
             ctx.drawImage(img, dx, dy, drawW, drawH);
-        // }
+        }
+        else if (typeof a.imgIndex === 'number' && avatarImgs[a.imgIndex] && avatarImgsLoaded[a.imgIndex]) {
+            const img = avatarImgs[a.imgIndex];
+            var drawW = s * 2;
+            var drawH = s * 2.2;
+            if (a.isChibi) {
+                drawW = s * 1.6;
+                drawH = s * 1.8;
+            }
+            const dx = a.x - drawW / 2;
+            const dy = a.y - drawH + s * 0.9;
+            ctx.drawImage(img, dx, dy, drawW, drawH);
+        }
 
         // name label
         if (showNames) {
             ctx.font = "14px pixelFontMain";
             ctx.textAlign = "center";
             ctx.fillStyle = "#000";
-            ctx.fillText(a.displayName, a.x, a.y + s * 1.1);
+            ctx.fillText(a.name, a.x, a.y + s * 1.1);
         }
 
         // bubble
