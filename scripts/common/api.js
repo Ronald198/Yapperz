@@ -13,7 +13,8 @@
     window.APP_CONFIG = config;
 
     const STORAGE_KEYS = {
-        session: "yapperz_session"
+        session: "yapperz_session",
+        activeRoom: "active_room"
     };
 
     function formatError(xhr) {
@@ -56,10 +57,10 @@
                 // Dynamic path resolution:
                 // If in a sub-page (contains '/pages/'), go up one level (../login/login.html)
                 // If at root (index.html), go down (pages/login/login.html)
-                const loginPath = currentPath.includes("/pages/") 
-                    ? "../login/login.html" 
+                const loginPath = currentPath.includes("/pages/")
+                    ? "../login/login.html"
                     : "pages/login/login.html";
-                    
+
                 window.location.href = loginPath;
             }
             return false;
@@ -134,24 +135,100 @@
         return request(`/Users/${encodeURIComponent(userId)}`);
     }
 
+    function joinRoom(roomCode) {
+        userId = getSession().id;
+
+        return request(`/Chatroom/join`, {
+            method: "POST",
+            data: { roomCode, userId }
+        }).then(response => {
+            const summarySource = response && typeof response === "object" ? response : {};
+            const roomSummary = {
+                code: roomCode,
+            };
+
+            
+            setActiveRoom(roomSummary);
+
+            // Redirect the user to the chatroom page after joining.
+            try {
+                const currentPath = window.location.pathname.toLowerCase();
+                const chatroomPath = currentPath.includes("/pages/")
+                    ? "../chatroom/chatroom.html"
+                    : "pages/chatroom/chatroom.html";
+                window.location.href = chatroomPath;
+            } catch (e) {
+                console.warn("Failed to redirect to chatroom", e);
+            }
+
+            return summarySource;
+        });
+    }
+
+    function leaveRoom(roomCode) {
+        userId = getSession().id;
+
+        return request(`/Chatroom/leave`, {
+            method: "POST",
+            data: { roomCode, userId }
+        }).then(response => {
+            const summarySource = response && typeof response === "object" ? response : {};
+            setActiveRoom(null);
+            return summarySource;
+        });
+    }
+
+    function setActiveRoom(room) {
+        if (!room) {
+            localStorage.removeItem(STORAGE_KEYS.activeRoom);
+            return;
+        }
+        localStorage.setItem(STORAGE_KEYS.activeRoom, JSON.stringify(room));
+    }
+
+    function getActiveRoom() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEYS.activeRoom);
+            return raw ? JSON.parse(raw) : null;
+        } catch (err) {
+            console.warn("Failed to parse active room cache", err);
+            return null;
+        }
+    }
+
+    function getRoomByCode(roomCode) {
+        if (!roomCode) {
+            return $.Deferred().reject({ message: "Missing room code" }).promise();
+        }
+        return request(`/Chatroom/${encodeURIComponent(roomCode)}`);
+    }
+
+    function getRoomUsersByRoomCode(roomCode) {
+        if (!roomCode) {
+            return $.Deferred().reject({ message: "Missing room code" }).promise();
+        }
+        
+        return request(`/Chatroom/${encodeURIComponent(roomCode)}/Users`);
+    }
+
     window.YapperzAPI = {
         // config,
         request,
         login,
         register,
         getUserById,
-        // listRooms,
-        // getRoomByCode,
+        getRoomUsersByRoomCode,
+        getRoomByCode,
         // createRoom,
-        // joinRoom,
-        // leaveRoom,
+        joinRoom,
+        leaveRoom,
         // getMessages,
         // sendMessage,
         ensureAuthenticated,
         getSession,
         setSession,
         clearSession,
-        // getActiveRoom,
-        // setActiveRoom
+        getActiveRoom,
+        setActiveRoom
     };
 })(window, window.jQuery);
