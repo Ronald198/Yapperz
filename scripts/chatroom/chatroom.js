@@ -152,7 +152,6 @@ $(function () {
 
     const activeRoomCodeRaw = YapperzAPI.getActiveRoom();
     const activeRoomCode = activeRoomCodeRaw.code;
-    // const activeRoom = YapperzAPI.getRoomByCode(activeRoomCode);
     if (!activeRoomCode) {
         window.location.href = "../../index.html";
         return;
@@ -222,7 +221,10 @@ $(function () {
     })();
 
     const bgImg = new Image();
-    bgImg.src = "../../assets/images/backgrounds/simplePark.jpg"; // TODO: change to activeRoom.theme
+    YapperzAPI.getRoomByCode(activeRoomCode).done((room) => {
+        bgImg.src = "../../assets/images/backgrounds/" + room.theme;
+    });
+
     let bgImgLoaded = false;
     bgImg.addEventListener("load", () => { bgImgLoaded = true; });
     const avatars = {};
