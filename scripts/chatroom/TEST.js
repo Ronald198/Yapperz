@@ -137,7 +137,7 @@ $(function () {
     });
 
     $("#invite-btn").on("click", function (e) {
-        showToast({ text: "Room code copied", bgColor: "#F9C972", hideAfter: 3000 });
+        showToast({ text: "Room code copied", bgColor: "#F9C972", hideAfter: 3000, textColor: "#E58352"});
     });
 
     $("#toggle-chat-btn").on("click", function (e) {
@@ -555,7 +555,7 @@ $(function () {
             text: opts.text || "",
             showHideTransition: opts.showHideTransition || "fade",
             bgColor: opts.bgColor || "#333",
-            textColor: opts.textColor || "#4E362F",
+            textColor: opts.textColor || "#E58352",
             allowToastClose: false,
             hideAfter: typeof opts.hideAfter === "number" ? opts.hideAfter : 4000,
             stack: 1, // ensure plugin-level stack is 1

@@ -1,4 +1,59 @@
 $(function () {
+    // === SignalR setup === 
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("https://localhost:7246/chatroomHub")
+        .configureLogging(signalR.LogLevel.Information)
+        .withAutomaticReconnect()
+        .build();
+
+    async function start() {
+        try {
+            await connection.start();
+            console.log("SignalR Connected.");
+        } catch (err) {
+            console.log(err);
+            setTimeout(start, 5000);
+        }
+    };
+
+    connection.onreconnecting(error => {
+        console.assert(connection.state === signalR.HubConnectionState.Reconnecting);
+
+        document.getElementById("messageInput").disabled = true;
+        
+        // TODO: Place a semi transparent overlay to show status and wait reconnect
+        const li = document.createElement("li");
+        li.textContent = `Connection lost due to error "${error}". Reconnecting.`;
+        document.getElementById("messageList").appendChild(li);
+    });
+
+    connection.onclose(async () => {
+        await start();
+    });
+
+    // Start the connection.
+    start();
+
+    async function sendMessage(message) {
+        try {
+            await connection.invoke("SendMessage", me.id, message);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    connection.on("ReceiveMessage", (userId, message) => {
+        console.log(`${userId}: ${message}`);
+
+        for (const id in avatars) {
+            const a = avatars[id];
+            if (a.id == userId) {
+                // console.log("BBB");
+                showBubble(a, message);
+            }
+        }
+    });
+
     // === DOM elements setup ===
     const chatTextfield = $("#chat-textfield");
     const canvas = document.getElementById("world");
@@ -22,8 +77,9 @@ $(function () {
         return;
     }
 
-    const activeRoom = YapperzAPI.getActiveRoom();
-    const activeRoomCode = activeRoom && activeRoom.code;
+    const activeRoomCodeRaw = YapperzAPI.getActiveRoom();
+    const activeRoomCode = activeRoomCodeRaw.code;
+    // const activeRoom = YapperzAPI.getRoomByCode(activeRoomCode);
     if (!activeRoomCode) {
         window.location.href = "../../index.html";
         return;
@@ -32,41 +88,11 @@ $(function () {
     var me;
     loadRoomUsers(activeRoomCode);
 
-    // === game state ===
-    // preload avatar images once and reuse (temp derisa t behet backendi)
-    // const avatarImgPaths = [
-    //     "../../assets/images/avatars/batmanAvatar.png",
-    //     "../../assets/images/avatars/boyAvatar1.png",
-    //     "../../assets/images/avatars/girlAvatar1.png",
-    //     "../../assets/images/avatars/girlAvatar2.png",
-    //     "../../assets/images/avatars/girlAvatar3.png",
-    //     "../../assets/images/avatars/pixelCat1.png",
-    //     "../../assets/images/avatars/pixelCat2.png",
-    //     "../../assets/images/avatars/bri.png",
-    //     "../../assets/images/avatars/gezi.png",
-    //     "../../assets/images/avatars/roni.png",
-    // ];
-    // const avatarImgs = [];
-    // const avatarImgsLoaded = [];
-    // avatarImgPaths.forEach((p, i) => {
-    //     const im = new Image();
-    //     im.src = p;
-    //     avatarImgs[i] = im;
-    //     avatarImgsLoaded[i] = false;
-    //     im.addEventListener("load", () => { avatarImgsLoaded[i] = true; });
-    // });
-    // preload background image and track loaded state (temp derisa t behet backendi)
     const bgImg = new Image();
-    bgImg.src = "../../assets/images/backgrounds/simplePark.jpg";
+    bgImg.src = "../../assets/images/backgrounds/simplePark.jpg"; // TODO: change to activeRoom.theme
     let bgImgLoaded = false;
     bgImg.addEventListener("load", () => { bgImgLoaded = true; });
-    // Avatar model: { id, x, y, vx, vy, color, name, targetX, targetY, bubble, bubbleTime, isChibi, imgIndex }
     const avatars = {};
-    let lastId = 0;
-
-    // Create local player (and some for fun)
-    // const me = createAvatar("me", canvas.width / 2, canvas.height / 2);
-    // $("#me-id").text(me.id);
 
     // keyboard input state for local player
     const input = { left: false, right: false, up: false, down: false };
@@ -92,7 +118,7 @@ $(function () {
     });
 
     $("#leave-btn").on("click", () => {
-        YapperzAPI.leaveRoom("ABCDEF"); // TODO: replace with current rooms id
+        YapperzAPI.leaveRoom(activeRoomCode);
         window.location.href = '../../index.html';
     });
 
@@ -122,7 +148,7 @@ $(function () {
     });
 
     $("#invite-btn").on("click", function (e) {
-        showToast({ text: "Room code copied", bgColor: "#F9C972", hideAfter: 3000 });
+        showToast({ text: "Room code copied", bgColor: "#5C4297", hideAfter: 3000 });
     });
 
     $("#toggle-chat-btn").on("click", function (e) {
@@ -170,50 +196,52 @@ $(function () {
         if (e.key === "Enter") {
             const text = chatTextfield.val().trim();
             if (text.length > 0) {
-                showBubble(me, text);
+                // showBubble(me, text);
+                sendMessage(text);
                 chatTextfield.val("");
             }
         }
     });
 
     // create chat bubble for demonstration RANDOMLY BECAUSE WE HAVE NO BACK END YET
-    setInterval(() => {
-        const arr = Object.values(avatars);
-        if (!arr.length) return;
-        const pickAvatar = arr[Math.floor(Math.random() * arr.length)];
-        if (pickAvatar === me) return; // skip local player
-        phrases = [
-            "Hello!",
-            "Yo Yo!",
-            "How's it going?",
-            "This place is cool!",
-            "What's your favorite game?",
-            "I love Yapperz!",
-            "How are you guys",
-            "mwhahahaha",
-            "Nice to meet you all!",
-            "Have a great day!",
-            "ca bot si kalut?",
-            "Imma touch you!",
-            "i need a job",
-            "whats up?",
-            "i love Yapperz!",
-            ":3",
-            "(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧",
-            "!!!",
-            "AFK getting snacks",
-            "brb petting my cat",
-            "Pixel party anyone?",
-            "Type /dance for moves!",
-            "need coffee asap",
-            "drop your favorite emoji",
-            "this place needs music",
-            "new quest soon?",
-            "best chatroom ever!",
-        ];
-        const pickPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-        showBubble(pickAvatar, pickPhrase);
-    }, 500);
+    // setInterval(() => {
+    //     const arr = Object.values(avatars);
+    //     if (!arr.length) return;
+    //     const pickAvatar = arr[Math.floor(Math.random() * arr.length)];
+    //     if (pickAvatar === me) return; // skip local player
+    //     phrases = [
+    //         "Hello!",
+    //         "Yo Yo!",
+    //         "How's it going?",
+    //         "This place is cool!",
+    //         "What's your favorite game?",
+    //         "I love Yapperz!",
+    //         "How are you guys",
+    //         "mwhahahaha",
+    //         "Nice to meet you all!",
+    //         "Have a great day!",
+    //         "ca bot si kalut?",
+    //         "Imma touch you!",
+    //         "i need a job",
+    //         "whats up?",
+    //         "i love Yapperz!",
+    //         ":3",
+    //         "(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧",
+    //         "!!!",
+    //         "AFK getting snacks",
+    //         "brb petting my cat",
+    //         "Pixel party anyone?",
+    //         "Type /dance for moves!",
+    //         "need coffee asap",
+    //         "drop your favorite emoji",
+    //         "this place needs music",
+    //         "new quest soon?",
+    //         "best chatroom ever!",
+    //     ];
+    //     const pickPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+    //     showBubble(pickAvatar, pickPhrase);
+    //     sendMessage(pickAvatar.displayName, pickPhrase);
+    // }, 500);
 
     // animation loop
     let last = performance.now();
@@ -274,7 +302,7 @@ $(function () {
             size: 28,
             avatarPath: AVATAR_ASSET_BASE + user.avatarPath
         };
-        console.log(a);
+        // console.log(a);
         avatars[user.id] = a;
         return a;
     }
