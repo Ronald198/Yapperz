@@ -104,3 +104,20 @@ canvas {
     pointer-events: auto;
     box-sizing: border-box;
 }
+
+/* Room code overlay (top-left) */
+#room-code-overlay {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    background: rgba(0,0,0,0.5);
+    color: #ffffff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    z-index: 10001;
+    pointer-events: none;
+    font-size: 12px;
+    font-family: pixelFontMain, sans-serif;
+    letter-spacing: 1px;
+}

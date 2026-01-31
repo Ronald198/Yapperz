@@ -141,6 +141,20 @@ $(function () {
         return;
     }
 
+    // Create/update a small overlay showing the current room code (top-left)
+    function setRoomCodeOverlay(code) {
+        if (!code) return;
+        let el = document.getElementById('room-code-overlay');
+        if (!el) {
+            el = document.createElement('div');
+            el.id = 'room-code-overlay';
+            document.body.appendChild(el);
+        }
+        el.textContent = `Room code: ${code}`;
+    }
+
+    setRoomCodeOverlay(activeRoomCode);
+
     var me;
     loadRoomUsers(activeRoomCode);
 
@@ -207,7 +221,11 @@ $(function () {
         // best-effort: notify hub to leave group, then call API and go back
         leaveSignalRGroup(activeRoomCode)
             .finally(() => YapperzAPI.leaveRoom(activeRoomCode))
-            .finally(() => { window.location.href = '../../index.html'; });
+            .finally(() => {
+                const el = document.getElementById('room-code-overlay');
+                if (el) el.remove();
+                window.location.href = '../../index.html';
+            });
     });
 
     // click to move local player
@@ -236,8 +254,13 @@ $(function () {
         $(this).children("i").first().toggleClass("hide-slash", showNames);
     });
 
-    $("#invite-btn").on("click", function (e) {
-        showToast({ text: "Room code copied", bgColor: "#5C4297", hideAfter: 3000 });
+    $("#invite-btn").on("click", async function (e) {
+        try {
+            await navigator.clipboard.writeText(activeRoomCode);
+            showToast({ text: "Room code copied", bgColor: "#5C4297", hideAfter: 3000 });
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+        }
     });
 
     $("#toggle-chat-btn").on("click", function (e) {
