@@ -26,8 +26,7 @@
             <button id="toggle-chat-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Hide Chat"><i class="fa fa-comments hide-slash" aria-hidden="true"></i></button>
             <button id="toggle-names-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Hide Names"><i class="fa fa-font hide-slash"></i></button>
             <button id="invite-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Invite friends"><i class="fa fa-link" aria-hidden="true"></i></button>
-            <!-- Pas midtermi kur t behet backendi for managing game state values -->
-            <button id="settings-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Settings"><i class="fa fa-cog" aria-hidden="true"></i></button>
+            <!-- <button id="settings-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Settings"><i class="fa fa-cog" aria-hidden="true"></i></button> -->
             <button id="fullscreen-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Fullscreen"><i class="fa fa-expand" aria-hidden="true"></i></button>
         </div>
         <div id="bottom-field-chat">
@@ -39,6 +38,10 @@
             <!-- <button id="emoji-btn" class="pixel-corners button-main pixel-font-main bottom-field-icon-button" title="Emojis"><i class="fa fa-smile" aria-hidden="true"></i></button> --> 
         </div>
     </div>
+
+    <audio loop="loop" id="audio-theme" autoplay>
+        <source src="../../assets/sfx/8bitTheme.mp3" type="audio/mpeg"/>
+    </audio>
 
     <!-- SCRIPTS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>

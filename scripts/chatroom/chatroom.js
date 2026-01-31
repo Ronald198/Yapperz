@@ -36,7 +36,7 @@ $(function () {
 
     async function joinSignalRGroup(roomCode) {
         try {
-            await connection.invoke("JoinRoomGroup", roomCode);
+            await connection.invoke("JoinRoomGroup", roomCode, YapperzAPI.getSession().id);
         } catch (err) {
             console.error(err);
         }
@@ -124,7 +124,7 @@ $(function () {
     // === game settings ===
     var showNames = true;
     var showTextBubbles = true;
-    var mute = true;
+    var mute = false;
     const AVATAR_ASSET_BASE = "../../assets/images/avatars/";
 
     const session = YapperzAPI.getSession();
@@ -225,8 +225,9 @@ $(function () {
     $("#toggle-mute-btn").on("click", function (e) {
         // maybe later after midterm when we have sound effects
         mute = !mute;
-        $(this).attr("title", mute ? "Mute" : "Unmute");
-        $(this).children("i").first().toggleClass("hide-slash", mute);
+        $(this).attr("title", mute ? "Unmute" : "Mute");
+        $(this).children("i").first().toggleClass("hide-slash", !mute);
+        $("#audio-theme").prop("muted", mute);
     });
 
     $("#toggle-names-btn").on("click", function (e) {
