@@ -10,6 +10,13 @@ $(function () {
         try {
             await connection.start();
             console.log("SignalR Connected.");
+            try { hideReconnectingOverlay(); } catch (e) { /* ignore if overlay not present */ }
+            // After a manual start, ensure we rejoin the room group so server broadcasts reach us
+            try {
+                if (typeof activeRoomCode !== 'undefined' && activeRoomCode) await joinSignalRGroup(activeRoomCode);
+            } catch (e) {
+                console.warn('Could not rejoin room group after start', e);
+            }
         } catch (err) {
             console.log(err);
             setTimeout(start, 5000);
@@ -18,13 +25,23 @@ $(function () {
 
     connection.onreconnecting(error => {
         console.assert(connection.state === signalR.HubConnectionState.Reconnecting);
+        // show a full-screen reconnect overlay while SignalR tries to reconnect
+        try { showReconnectingOverlay(); } catch (e) { console.warn('Could not show reconnect overlay', e); }
+    });
 
-        // document.getElementById("messageInput").disabled = true;
-        
-        // TODO: Place a semi transparent overlay to show status and wait reconnect
-        // const li = document.createElement("li");
-        // li.textContent = `Connection lost due to error "${error}". Reconnecting.`;
-        // document.getElementById("messageList").appendChild(li);
+    connection.onreconnected(async connectionId => {
+        try {
+            hideReconnectingOverlay();
+            // rejoin the room group so we're listening in the correct group
+            try {
+                if (typeof activeRoomCode !== 'undefined' && activeRoomCode) await joinSignalRGroup(activeRoomCode);
+            } catch (e) {
+                console.warn('Failed to rejoin room group on reconnected', e);
+            }
+            showToast({ text: 'Reconnected', bgColor: "#5C4297", hideAfter: 2000 });
+        } catch (e) {
+            console.warn('Error handling reconnected', e);
+        }
     });
 
     connection.onclose(async () => {
@@ -151,6 +168,22 @@ $(function () {
             document.body.appendChild(el);
         }
         el.textContent = `Room code: ${code}`;
+    }
+
+    // Reconnect overlay helpers - whole-screen transparent overlay with spinner/text
+    function showReconnectingOverlay() {
+        let el = document.getElementById('reconnecting-overlay');
+        if (!el) {
+            el = document.createElement('div');
+            el.id = 'reconnecting-overlay';
+            el.innerHTML = '<div class="reconnect-spinner" aria-hidden="true"></div><div class="reconnect-text">Reconnecting...</div>';
+            document.body.appendChild(el);
+        }
+    }
+
+    function hideReconnectingOverlay() {
+        const el = document.getElementById('reconnecting-overlay');
+        if (el) el.remove();
     }
 
     setRoomCodeOverlay(activeRoomCode);
