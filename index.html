@@ -3,10 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yapperz</title>
-    <link rel="shortcut icon" href="assets/images/avatars/pixelCat1.png" type="image/x-icon">
+    <link rel="stylesheet" href="styles/global.css" />
+    <link  href="styles/lobby/lobby.css" rel="stylesheet" />
+    <title>Yapperz | Lobby</title>
+    <link rel="shortcut icon" href="assets/images/icons/pixelcat2.jpeg" type="image/x-icon">
 </head>
 <body>
-    <h1>Welcome to Yapperz!!</h1>
+    <div id="room-nav-bar" class="pixel-corners" class="pixel-corners--wrapper">
+        <div id="welcome">
+            <label id="page-slogan">Start yappin'</label><br>
+            <label id="join-label" >Join randoms or initiate your own discussion</label>
+        </div>
+
+        <div id="room-init">
+            <button id="create-room" class="init-buttons" popovertarget="room-open" >Create Room</button>
+            <div id="room-open" class="popover" popover>
+                <h2>Create a room</h2><br>
+                <label>Name of room:</label><br>
+                <input type="text" id="room-name" name="room-name" placeholder="Enter room name"><br>
+                <label>Max participants:</label> <br>
+                <input type="number" id="max-participants" name="max-participants" value="10" min="2" max="25"><br>
+                <label>Room description:</label><br>
+                <textarea id="room-description" name="room-description" rows="3" cols="30" placeholder="Enter room description"></textarea><br>
+                <br>
+                
+                <label>Room theme:</label>
+                <select id="room-theme" name="room-theme">
+                    <option value="desert">Desert</option>
+                    <option value="sea">Sea</option>
+                    <option value="park">Park</option>
+                    <option value="temple">Temple</option>
+                </select>
+                <button id="create-room-btn">Create</button>
+            </div>
+            <button id="enter-room" class="init-buttons" popovertarget="room-enter">Enter Room</button>
+            <div id="room-enter" class="popover" popover>
+                <h2>Enter a room</h2><br>
+                <label>Room code:</label><br>
+                <input type="text" id="room-code" name="room-code" placeholder="Enter room code"><br><br>
+                <a href="pages/chatroom/chatroom.html">
+                    <button id="enter-room-btn">Enter</button>
+                </a>
+                
+            </div>
+        </div>
+
+    </div>
+
+    <div id="dashboard" class="pixel-corners" class="pixel-corners--wrapper">
+        
+        <div id="profile-link-div">
+            <a href="pages/profile/profile.html"><img src="assets/images/icons/pixelcat2.jpeg" id="profile-icon"></a> 
+            <label for="profile-icon">Profile</label>
+        </div>    
+        <div id="filter-icons">
+            <label id="filter-icon-label">Filter Rooms</label>
+            <button id="filter1-btn" class="filters">
+                <img src="assets/images/backgrounds/temple.jpg" id="filter1-img" class="filter-image" alt="temple">
+            </button>
+            <button id="filter2-btn" class="filters" >
+                <img src="assets/images/backgrounds/desert.jpg" id="filter2-img" class="filter-image" alt="desert">
+            </button>
+            <button id="filter3-btn" class="filters">
+                <img src="assets/images/backgrounds/sea.jpg" id="filter3-img" class="filter-image" alt="sea">
+            </button>
+            <button id="filter4-btn" class="filters">
+                <img src="assets/images/backgrounds/park.jpg" id="filter4-img" class="filter-image" alt="park">
+            </button>
+        </div> 
+    </div>
+
+    <div id="body" class="pixel-corners" class="pixel-corners--wrapper">
+        <div id="rooms">
+            <div id="no-rooms-placeholder" class="pixel-corners">
+                <h2>No rooms yet</h2>
+                <p>Be the first to create a chatroom or join one with a code.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="scripts/common/api.js" defer></script>
+    <script src="scripts/lobby/lobby.js" defer></script>
 </body>
 </html>
+
+
+<!-- old versions of rooms: -->
+
+
+            <!-- <div id="room2"class="rooms" >
+                <label>Room2</label>
+                <label>Room theme: </label>
+                <img src="images/mariostarpixel.jpeg" id="room2-img" class="filter-image">
+                <label>Room description: </label>
+                <p>This is a room about coding!</p>
+                <button class="join-room-btn">Join Room</button>
+            </div> -->
+        
+            <!-- <div id="room3"class="rooms" >
+                <label>Room2</label>
+                <label>Room theme: </label>
+                <img src="images/mariostarpixel.jpeg" id="room3-img" class="filter-image">
+                <label>Room description: </label>
+                <p>This is a room about coding!</p>
+                <button class="join-room-btn">Join Room</button>
+            </div> -->

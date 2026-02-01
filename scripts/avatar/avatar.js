@@ -1,3 +1,6 @@
+// Initialize API reference
+const api = window.YapperzAPI;
+
 // all available avatars in the system  
 const avatars = [
     // each avatar has a gender, hair color, and clothing style 
@@ -33,24 +36,6 @@ const avatars = [
         clothingStyle: "casual"
     },
     {
-        src: "../../assets/images/avatars/boy7.png",
-        gender: "male",
-        hairColor: "black",
-        clothingStyle: "cosy"
-    },
-    {
-        src: "../../assets/images/avatars/boy8.png",
-        gender: "male",
-        hairColor: "black",
-        clothingStyle: "classic"
-    },
-    {
-        src: "../../assets/images/avatars/boy9.png",
-        gender: "male",
-        hairColor: "black",
-        clothingStyle: "sportive"
-    },
-    {
         src: "../../assets/images/avatars/boy10.png",
         gender: "male",
         hairColor: "black",
@@ -63,18 +48,6 @@ const avatars = [
         gender: "male",
         hairColor: "brunette",
         clothingStyle: "cosy"
-    },
-    {
-        src: "../../assets/images/avatars/boy16.png",
-        gender: "male",
-        hairColor: "brunette",
-        clothingStyle: "classic"
-    },
-    {
-        src: "../../assets/images/avatars/boy17.png",
-        gender: "male",
-        hairColor: "brunette",
-        clothingStyle: "casual"
     },
     {
         src: "../../assets/images/avatars/boy18.png",
@@ -242,8 +215,14 @@ function renderAvatars() {
         img.src = avatar.src;
         img.alt = 'Avatar';
 
-        // for errors in image display 
-        img.onerror = () => item.remove();
+        // // FIXED: Silently handle image errors - don't show console errors
+        // img.onerror = function() {
+        //     // Remove the item from DOM if image doesn't exist
+        //     if (item.parentNode) {
+        //         item.parentNode.removeChild(item);
+        //     }
+        //     // Don't log errors to console - just silently remove
+        // };
         
         item.appendChild(img);
         
@@ -264,10 +243,85 @@ function displayAvatar(src) {
     avatarFrame.innerHTML = `<img src="${src}" alt="Selected Avatar">`;
     
     const img = avatarFrame.querySelector('img');
-    img.onerror = () => {
+    // Silently handle image errors for display avatar
+    img.onerror = function() {
         avatarFrame.classList.add('empty');
         avatarFrame.innerHTML = '';
+        console.warn('Avatar image not found:', src);
     };
+}
+
+// Load current user's avatar on page load
+async function loadCurrentAvatar() {
+    try {
+        const session = api.getSession();
+        if (!session || !session.id) {
+            console.error('No user session found');
+            return;
+        }
+
+        // Get user data to retrieve current avatar
+        const userData = await api.request(`/Users/${session.id}`, {
+            method: 'GET'
+        });
+
+        if (userData && userData.avatarPath) {
+            selectedAvatar = userData.avatarPath;
+            displayAvatar(userData.avatarPath);
+            renderAvatars(); // Re-render to show selection
+        }
+    } catch (error) {
+        console.error('Error loading current avatar:', error);
+    }
+}
+
+//Save avatar function with session update
+async function saveAvatar() {
+    if (!selectedAvatar) {
+        alert('Please select an avatar first!');
+        return;
+    }
+
+    try {
+        const session = api.getSession();
+        if (!session || !session.id) {
+            alert('You must be logged in to save an avatar');
+            return;
+        }
+
+        const saveButton = document.getElementById('saveAvatar');
+        saveButton.disabled = true;
+        saveButton.textContent = 'Saving...';
+
+        // Send update request to backend
+        const response = await api.request('/Users/UpdateAvatar', {
+            method: 'PUT',
+            data: {
+                userId: session.id,
+                avatarPath: selectedAvatar
+            }
+        });
+
+        // jQuery promise returns data directly
+        console.log('Avatar saved successfully!', response);
+        alert('Avatar saved successfully!');
+        
+        // Update the session with the new avatar path
+        if (response && response.avatarPath) {
+            const updatedSession = api.getSession();
+            updatedSession.avatarPath = response.avatarPath;
+            api.setSession(updatedSession);
+            console.log('Session updated with new avatar:', updatedSession);
+        }
+        
+    } catch (error) {
+        console.error('Error saving avatar:', error);
+        alert('An error occurred while saving the avatar: ' + (error.message || 'Unknown error'));
+    } finally {
+        const saveButton = document.getElementById('saveAvatar');
+        saveButton.disabled = false;
+        saveButton.textContent = 'Save Avatar';
+    }
 }
 
 // handles switching categories 
@@ -281,7 +335,10 @@ document.getElementById('nextCategory').addEventListener('click', () => {
     renderCategory();
 });
 
+// Add save button event listener
+document.getElementById('saveAvatar').addEventListener('click', saveAvatar);
+
 // calling functions 
 renderCategory();
 renderAvatars();
-
+loadCurrentAvatar(); // Load user's current avatar

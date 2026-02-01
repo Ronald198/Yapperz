@@ -1,44 +1,60 @@
+const API_BASE_URL = 'https://localhost:7246/api';
+
+// Room filter functionality
 const filterButtons = document.querySelectorAll('.filters');
 let activeFilter = null;
 
-
-const filterThemeMap = {  //mapping the button IDs to the available themes, so we can easily get the theme based on which button is clicked
+// Map filter buttons to their themes
+const filterThemeMap = {
     'filter1-btn': 'temple',
     'filter2-btn': 'desert',
     'filter3-btn': 'sea',
     'filter4-btn': 'park'
 };
 
-function getRoomTheme(roomCard) { //finding what theme a room has based on its image source
+const roomsContainer = document.getElementById('rooms');
+const noRoomsPlaceholder = document.getElementById('no-rooms-placeholder');
+
+function updateRoomsEmptyState() {
+    if (!roomsContainer || !noRoomsPlaceholder) {
+        return;
+    }
+
+    const hasRooms = roomsContainer.querySelectorAll('.room-card').length > 0;
+    noRoomsPlaceholder.style.display = hasRooms ? 'none' : 'flex';
+}
+
+// Get theme from room card's image src
+function getRoomTheme(roomCard) {
     const themeImg = roomCard.querySelector('.theme-image');
     const imgSrc = themeImg.getAttribute('src');
     
     if (imgSrc.includes('temple')) return 'temple';
     if (imgSrc.includes('desert')) return 'desert';
     if (imgSrc.includes('sea')) return 'sea';
-    if (imgSrc.includes('Park')) return 'park';
+    if (imgSrc.includes('park')) return 'park';
     
     return null;
 }
 
-
-function filterRooms(theme) {   
+// Filter rooms based on theme
+function filterRooms(theme) {
     const roomCards = document.querySelectorAll('.room-card');
     
     roomCards.forEach(room => {
-        const roomTheme = getRoomTheme(room); //getting the theme from the function above
+        const roomTheme = getRoomTheme(room);
         
         if (roomTheme === theme) {
-            room.style.display = 'flex'; 
+            room.style.display = 'flex'; // Show matching rooms
         } else {
-            room.style.display = 'none'; //hide rooms that are not the selected theme
+            room.style.display = 'none'; // Hide non-matching rooms
         }
     });
 }
 
-
+// Show all rooms
 function showAllRooms() {
-    const roomCards = document.querySelectorAll('.room-card'); //show all rooms again after filter was selected
+    const roomCards = document.querySelectorAll('.room-card');
     roomCards.forEach(room => {
         room.style.display = 'flex';
     });
@@ -50,19 +66,19 @@ filterButtons.forEach(button => {
         const buttonId = this.getAttribute('id');
         const theme = filterThemeMap[buttonId];
         
-        //giving a toggle effect: if the same filter is clicked again, it removes the filter and shows all rooms
+        // If clicking the same button, toggle off the filter
         if (activeFilter === theme) {
             showAllRooms();
             activeFilter = null;
-            
-            filterButtons.forEach(btn => btn.style.opacity = '1'); //distinguishing active filter button
+            // Remove active styling from all buttons
+            filterButtons.forEach(btn => btn.style.opacity = '1');
         } else {
-            
-            filterRooms(theme); //changinf the filter
+            // Apply new filter
+            filterRooms(theme);
             activeFilter = theme;
             
-            
-            filterButtons.forEach(btn => { //distinguishing active filter button by dimming the others
+            // Visual feedback: dim inactive buttons
+            filterButtons.forEach(btn => {
                 if (btn.getAttribute('id') === buttonId) {
                     btn.style.opacity = '1';
                 } else {
@@ -72,7 +88,210 @@ filterButtons.forEach(button => {
         }
     });
 });
-    
 
+// ============ AJAX API FUNCTIONS ============
 
+// Create a new chatroom
+function createChatroom(roomData) {
+    console.log('Sending request to:', `${API_BASE_URL}/Rooms`);
+    console.log('Request data:', roomData);
     
+    $.ajax({
+        url: `${API_BASE_URL}/Rooms`,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            name: roomData.name,
+            description: roomData.description,
+            theme: roomData.theme,
+            maxPlayers: roomData.maxPlayers || 10
+        }),
+        success: function(response) {
+            console.log('Chatroom created successfully:', response);
+            alert(`Room created! Code: ${response.code}`);
+            
+            // Add the new room to the UI
+            addRoomCardToUI(response);
+            
+            // Close the popover
+            document.getElementById('room-open').hidePopover();
+            
+            // Clear form fields
+            document.getElementById('room-name').value = '';
+            document.getElementById('room-description').value = '';
+
+             window.location.href = `pages/chatroom/chatroom.html?code=${response.code}`;
+        },
+        error: function(xhr, status, error) {
+            console.error('Error creating chatroom:', error);
+            console.error('Status:', status);
+            console.error('Response:', xhr.responseText);
+            console.error('Status Code:', xhr.status);
+            alert('Failed to create chatroom. Check console for details.');
+        }
+    });
+}
+
+// Delete a chatroom by ID
+function deleteChatroom(chatroomId) {
+    if (!confirm('Are you sure you want to delete this chatroom?')) {
+        return;
+    }
+    
+    $.ajax({
+        url: `${API_BASE_URL}/Rooms/${chatroomId}`,
+        type: 'DELETE',
+        success: function(response) {
+            console.log('Chatroom deleted successfully:', response);
+            alert(response.message);
+            
+            // Remove the room card from UI
+            const roomCard = document.querySelector(`[data-room-id="${chatroomId}"]`);
+            if (roomCard) {
+                roomCard.remove();
+                updateRoomsEmptyState();
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error deleting chatroom:', error);
+            alert('Failed to delete chatroom: ' + (xhr.responseJSON?.message || error));
+        }
+    });
+}
+
+// Helper function to add a room card to the UI
+function addRoomCardToUI(room) {
+    if (!roomsContainer) {
+        return;
+    }
+
+    // Map theme to image
+    const themeImages = {
+        'desert.jpg': 'assets/images/backgrounds/desert.jpg',
+        'sea.jpg': 'assets/images/backgrounds/sea.jpg',
+        'park.jpg': 'assets/images/backgrounds/park.jpg',
+        'temple.jpg': 'assets/images/backgrounds/temple.jpg'
+    };
+    
+    const roomCard = document.createElement('div');
+    roomCard.className = 'room-card rooms pixel-corners';
+    roomCard.setAttribute('data-room-id', room.id);
+    
+    roomCard.innerHTML = `
+        <div class="room-left">
+            <div class="room-main">
+                <h2 class="room-title">${room.name}</h2>
+                <div class="room-description">
+                    <label class="room-des-label">About</label>
+                    <p>${room.description || 'No description'}</p>
+                </div>
+            </div>
+        </div>
+        <div class="room-right">
+            <div class="room-theme">
+                <label>Room theme</label>
+                <div class="theme-image-wrap">
+                    <img src="${themeImages[room.theme.toLowerCase()]}" alt="theme" class="theme-image">
+                </div>
+            </div>
+            <button class="join-room-btn" data-room-code="${room.code}">Join Room</button>
+        </div>
+    `;
+    
+    roomsContainer.appendChild(roomCard);
+    updateRoomsEmptyState();
+}
+
+// ============ EVENT LISTENERS ============
+
+// Handle create room button click (button already exists in HTML)
+document.getElementById('create-room-btn').addEventListener('click', function(e) {
+    e.preventDefault(); // Prevent the anchor tag from navigating
+    e.stopPropagation(); // Stop event bubbling
+    
+    const roomName = document.getElementById('room-name').value.trim();
+    const roomDescription = document.getElementById('room-description').value.trim();
+    const roomTheme = document.getElementById('room-theme').value + '.jpg';
+    const maxPlayers = parseInt(document.getElementById('max-participants').value);
+    
+    console.log('Create button clicked!', { roomName, roomDescription, roomTheme, maxPlayers });
+    
+    if (!roomName) {
+        alert('Please enter a room name');
+        return;
+    }
+    
+    if (maxPlayers < 2 || maxPlayers > 25) {
+        alert('Max participants must be between 2 and 25');
+        return;
+    }
+    
+    createChatroom({
+        name: roomName,
+        description: roomDescription,
+        theme: roomTheme,
+        maxPlayers: maxPlayers
+    });
+    
+    return false; // Extra prevention of navigation
+});
+
+// Handle join room button clicks (event delegation)
+if (roomsContainer) {
+    roomsContainer.addEventListener('click', function(e) {
+        if (e.target.classList.contains('join-room-btn')) {
+            const roomCode = e.target.getAttribute('data-room-code');
+            console.log('Joining room with code:', roomCode);
+            YapperzAPI.joinRoom(roomCode);
+        }
+    });
+}
+
+// Handle enter room button click (manual room code entry)
+document.getElementById('enter-room-btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const roomCode = document.getElementById('room-code').value.trim();
+    
+    console.log('Entering room with code:', roomCode);
+    
+    if (!roomCode) {
+        alert('Please enter a room code');
+        return;
+    }
+    
+    // Redirect to chatroom with the room code
+    window.location.href = `pages/chatroom/chatroom.html?code=${roomCode}`;
+    
+    return false;
+});
+
+// Load all chatrooms from the database
+function loadChatrooms() {
+    $.ajax({
+        url: `${API_BASE_URL}/Rooms`,
+        type: 'GET',
+        success: function(chatrooms) {
+            console.log('Chatrooms loaded from database:', chatrooms);
+            
+            // Add each room from the database to the UI
+            chatrooms.forEach(room => {
+                addRoomCardToUI(room);
+            });
+
+            updateRoomsEmptyState();
+        },
+        error: function(xhr, status, error) {
+            console.error('Error loading chatrooms:', error);
+            console.error('Make sure you have a GET endpoint in your ChatRoomController');
+            updateRoomsEmptyState();
+        }
+    });
+}
+
+// Load chatrooms when the page loads
+$(document).ready(function() {
+    updateRoomsEmptyState();
+    loadChatrooms();
+});

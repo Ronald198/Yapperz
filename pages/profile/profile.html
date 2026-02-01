@@ -13,20 +13,17 @@
 </head>
 <body>
 
-    <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="nav-brand">
             <i class="fa-solid fa-comments"></i> Yapperz
         </div>
-        <a href="../lobby/lobby.html" class="pixel-corners button-main back-btn">
+        <a href="../../index.html" class="pixel-corners button-main back-btn">
             <i class="fa fa-arrow-left"></i> Back to Lobby
         </a>
     </nav>
 
-    <!-- Profile Content -->
     <div class="profile-container">
         
-        <!-- Identity Column -->
         <div class="pixel-corners">
             <div class="card-content identity-card">
                 <div class="pixel-corners avatar-frame">
@@ -48,11 +45,9 @@
             </div>
         </div>
 
-        <!-- Details Column -->
         <div class="pixel-corners">
             <div class="card-content details-section">
                 
-                <!-- Statistics -->
                 <div class="stats-section">
                     <h2 class="section-title">Stats Board</h2>
                     <div class="stats-grid">
@@ -61,24 +56,19 @@
                             <span class="stat-label">Total Yaps</span>
                         </div>
                         <div class="pixel-corners stat-box">
-                            <span class="stat-value">12</span>
-                            <span class="stat-label">Friends</span>
-                        </div>
-                        <div class="pixel-corners stat-box">
                             <span class="stat-value">Oct 23</span>
                             <span class="stat-label">Joined</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Account Settings -->
                 <div class="settings-section">
                     <h2 class="section-title">Account Details</h2>
                     <form id="profile-form" class="settings-form">
                         <div class="input-group">
-                            <label for="username">Display Name</label>
+                            <label for="display-name">Display Name</label>
                             <div class="pixel-corners">
-                                <input type="text" id="username" class="form-input" value="PixelMaster99" disabled style="width: 100%;">
+                                <input type="text" id="display-name" class="form-input" value="PixelMaster99" disabled style="width: 100%;">
                             </div>
                         </div>
 
@@ -102,10 +92,8 @@
 
                 <hr style="border: 1px dashed var(--border); width: 100%;">
 
-                <!-- Danger Zone -->
                 <div class="danger-zone" style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>Log out of your session?</span>
-                    <a href="../login/login.html" class="pixel-corners button-main btn-danger" style="padding: 8px 15px; font-size: 14px;">
+                    <a class="pixel-corners button-main btn-danger" style="padding: 8px 15px; font-size: 14px;">
                         <i class="fa fa-sign-out"></i> Logout
                     </a>
                 </div>
@@ -115,6 +103,7 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="../../scripts/common/api.js"></script>
     <script src="../../scripts/profile/profile.js"></script>
 </body>
 </html>

@@ -21,15 +21,22 @@
 
         <form method="POST" id="form" autocomplete="off">
             <div class="pixel-corners">
-                <input type="text" placeholder="Name" name="name" id="name-input-field" class="form-input-field">
+                <input type="text" placeholder="Username" name="username" id="username-input-field" class="form-input-field">
             </div>
-            <p class="error" id="nameErr"></p>
+            <p class="error" id="usernameErr"></p>
             <br>
             <div class="pixel-corners">
-                <input type="text" placeholder="Surname" name="surname" id="surname-input-field" class="form-input-field">
+                <input type="text" placeholder="Display Name" name="displayname" id="displayname-input-field" class="form-input-field">
             </div>
-            <p class="error" id="surnameErr"></p>
-            <br>
+            <p class="error" id="displaynameErr"></p>
+            <div class="gender">
+                <div id="form-checkbox-container">
+                    <p>Gender:</p>
+                    <span>Male</span><input type="radio" class="form-checkbox" name="gender" value="M">
+                    <span>Female</span><input type="radio" class="form-checkbox" name="gender" value="F">
+                </div>
+            </div>
+            <p class="error" id="genderErr"></p>
             <div class="pixel-corners">
                 <input type="email" placeholder="Email" name="email" id="email-input-field" class="form-input-field">
             </div>
@@ -48,7 +55,7 @@
             <br>
             <div class="terms">
                 <div id="form-checkbox-container">
-                    <p>I accept all Terms and Conditions:</p> <input type="checkbox" class="form-checkbox">
+                    <p>I accept all Terms and Conditions:</p> <input type="checkbox" class="form-checkbox" id="terms-checkbox">
                 </div>
             </div>
             <p class="error" id="checkboxErr"></p>
@@ -66,6 +73,7 @@
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="../../scripts/signup/signup.js"></script>
+    <script src="../../scripts/common/api.js"></script>
 </body>
 
 </html>

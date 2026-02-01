@@ -51,10 +51,6 @@ canvas {
     -webkit-text-stroke: 1px var(--bg-btn); /* Outline width and color */
 }
 
-#new-btn {
-    padding: 8px 12px;
-}
-
 #bottom-field-chat {
     display: flex;
     align-items: center;
@@ -107,4 +103,56 @@ canvas {
 .jq-toast-wrap .jq-toast {
     pointer-events: auto;
     box-sizing: border-box;
+}
+
+/* Room code overlay (top-left) */
+#room-code-overlay {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    background: rgba(0,0,0,0.5);
+    color: #ffffff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    z-index: 10001;
+    pointer-events: none;
+    font-size: 12px;
+    font-family: pixelFontMain, sans-serif;
+    letter-spacing: 1px;
+}
+
+/* Full-screen reconnect overlay */
+#reconnecting-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 10002;
+    pointer-events: all;
+}
+
+.reconnect-spinner {
+    width: 64px;
+    height: 64px;
+    border: 8px solid rgba(255,255,255,0.18);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: reconnect-spin 1s linear infinite;
+    margin-bottom: 12px;
+}
+
+@keyframes reconnect-spin {
+    to { transform: rotate(360deg); }
+}
+
+#reconnecting-overlay .reconnect-text {
+    color: #ffffff;
+    font-size: 18px;
+    font-family: pixelFontMain, sans-serif;
+    letter-spacing: 1px;
+    text-shadow: 0 0 6px rgba(0,0,0,0.6);
 }

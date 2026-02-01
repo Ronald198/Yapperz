@@ -1,4 +1,132 @@
 $(function () {
+    // === SignalR setup === 
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("https://localhost:7246/chatroomHub")
+        .configureLogging(signalR.LogLevel.Information)
+        .withAutomaticReconnect()
+        .build();
+
+    async function start() {
+        try {
+            await connection.start();
+            console.log("SignalR Connected.");
+            try { hideReconnectingOverlay(); } catch (e) { /* ignore if overlay not present */ }
+            // After a manual start, ensure we rejoin the room group so server broadcasts reach us
+            try {
+                if (typeof activeRoomCode !== 'undefined' && activeRoomCode) await joinSignalRGroup(activeRoomCode);
+            } catch (e) {
+                console.warn('Could not rejoin room group after start', e);
+            }
+        } catch (err) {
+            console.log(err);
+            setTimeout(start, 5000);
+        }
+    };
+
+    connection.onreconnecting(error => {
+        console.assert(connection.state === signalR.HubConnectionState.Reconnecting);
+        // show a full-screen reconnect overlay while SignalR tries to reconnect
+        try { showReconnectingOverlay(); } catch (e) { console.warn('Could not show reconnect overlay', e); }
+    });
+
+    connection.onreconnected(async connectionId => {
+        try {
+            hideReconnectingOverlay();
+            // rejoin the room group so we're listening in the correct group
+            try {
+                if (typeof activeRoomCode !== 'undefined' && activeRoomCode) await joinSignalRGroup(activeRoomCode);
+            } catch (e) {
+                console.warn('Failed to rejoin room group on reconnected', e);
+            }
+            showToast({ text: 'Reconnected', bgColor: "#5C4297", hideAfter: 2000 });
+        } catch (e) {
+            console.warn('Error handling reconnected', e);
+        }
+    });
+
+    connection.onclose(async () => {
+        await start();
+    });
+
+    // Start the connection.
+    start();
+
+    async function joinSignalRGroup(roomCode) {
+        try {
+            await connection.invoke("JoinRoomGroup", roomCode, YapperzAPI.getSession().id);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+    
+    async function leaveSignalRGroup(roomCode) {
+        try {
+            await connection.invoke("LeaveRoomGroup", roomCode);
+            console.log("Successfully left room group!");
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function sendMessage(message) {
+        try {
+            await connection.invoke("SendMessage", activeRoomCode, me.id, message);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    connection.on("ReceiveMessage", (userId, message) => {
+        console.log(`${userId}: ${message}`);
+
+        for (const id in avatars) {
+            const a = avatars[id];
+            if (a.id == userId) {
+                // console.log("BBB");
+                showBubble(a, message);
+            }
+        }
+    });
+
+    // Server will send the full user DTO when a new player joins.
+    connection.on("NewPlayerJoined", (user) => {
+        try {
+            console.log("NewPlayerJoined:", user);
+            if (!user || !user.id) return;
+
+            // If the joined user is the current session user, ensure `me` is set/updated
+            if (session && user.id === session.id) {
+                // create or update local avatar
+                const spawned = getSpawnPosition();
+                me = createAvatar(user, canvas.width / 2, canvas.height / 2);
+                avatars[user.id] = me;
+                showToast({ text: `${getDisplayName(user)} rejoined`, bgColor: "#5C4297", hideAfter: 2000 });
+                return;
+            }
+
+            // Avoid duplicates
+            if (avatars[user.id]) {
+                // update display name/avatar if needed
+                avatars[user.id].displayName = user.displayName || avatars[user.id].displayName;
+                avatars[user.id].avatarPath = user.avatarPath;
+                return;
+            }
+
+            const spawn = getSpawnPosition();
+            const a = createAvatar(user, spawn.x, spawn.y);
+            // store full avatarPath on created avatar
+            a.avatarPath = user.avatarPath;
+            showToast({ text: `${getDisplayName(user)} joined the room`, bgColor: "#5C4297", hideAfter: 2500 });
+        } catch (err) {
+            console.error("Error handling NewPlayerJoined", err);
+        }
+    });
+
+    connection.on("PlayerLeft", (userId, displayName) => {
+        delete avatars[userId];
+        showToast({ text: `${displayName} left`, bgColor: "#5C4297", hideAfter: 2000 });
+    });
+
     // === DOM elements setup ===
     const chatTextfield = $("#chat-textfield");
     const canvas = document.getElementById("world");
@@ -13,46 +141,100 @@ $(function () {
     // === game settings ===
     var showNames = true;
     var showTextBubbles = true;
-    var mute = true;
+    var mute = false;
 
-    // === game state ===
-    // preload avatar images once and reuse (temp derisa t behet backendi)
-    const avatarImgPaths = [
-        "../../assets/images/avatars/batmanAvatar.png",
-        "../../assets/images/avatars/boyAvatar1.png",
-        "../../assets/images/avatars/girlAvatar1.png",
-        "../../assets/images/avatars/girlAvatar2.png",
-        "../../assets/images/avatars/girlAvatar3.png",
-        "../../assets/images/avatars/pixelCat1.png",
-        "../../assets/images/avatars/pixelCat2.png",
-        "../../assets/images/avatars/bri.png",
-        "../../assets/images/avatars/gezi.png",
-        "../../assets/images/avatars/roni.png",
-    ];
-    const avatarImgs = [];
-    const avatarImgsLoaded = [];
-    avatarImgPaths.forEach((p, i) => {
-        const im = new Image();
-        im.src = p;
-        avatarImgs[i] = im;
-        avatarImgsLoaded[i] = false;
-        im.addEventListener("load", () => { avatarImgsLoaded[i] = true; });
-    });
-    // preload background image and track loaded state (temp derisa t behet backendi)
+    const session = YapperzAPI.getSession();
+    if (!session) {
+        YapperzAPI.ensureAuthenticated({ redirectToLogin: true });
+        return;
+    }
+
+    const activeRoomData = YapperzAPI.getActiveRoom();
+    const activeRoomCode = (() => {
+        if (!activeRoomData) return null;
+        if (typeof activeRoomData === "string") return activeRoomData.trim();
+        if (typeof activeRoomData === "object") {
+            // Prefer .code but fall back to alternate casing when possible
+            return activeRoomData.code || activeRoomData.roomCode || activeRoomData.RoomCode || null;
+        }
+        return null;
+    })();
+    if (!activeRoomCode) {
+        window.location.href = "../../index.html";
+        return;
+    }
+
+    // Create/update a small overlay showing the current room code (top-left)
+    function setRoomCodeOverlay(code) {
+        if (!code) return;
+        let el = document.getElementById('room-code-overlay');
+        if (!el) {
+            el = document.createElement('div');
+            el.id = 'room-code-overlay';
+            document.body.appendChild(el);
+        }
+        el.textContent = `Room code: ${code}`;
+    }
+
+    // Reconnect overlay helpers - whole-screen transparent overlay with spinner/text
+    function showReconnectingOverlay() {
+        let el = document.getElementById('reconnecting-overlay');
+        if (!el) {
+            el = document.createElement('div');
+            el.id = 'reconnecting-overlay';
+            el.innerHTML = '<div class="reconnect-spinner" aria-hidden="true"></div><div class="reconnect-text">Reconnecting...</div>';
+            document.body.appendChild(el);
+        }
+    }
+
+    function hideReconnectingOverlay() {
+        const el = document.getElementById('reconnecting-overlay');
+        if (el) el.remove();
+    }
+
+    setRoomCodeOverlay(activeRoomCode);
+
+    var me;
+    loadRoomUsers(activeRoomCode);
+
+    // Ensure the SignalR connection is in the room group for this chatroom.
+    // If connection isn't started yet, start() will resolve automatically; call start() then join.
+    (async () => {
+        try {
+            // Ensure the connection is established without trying to start it when
+            // it's already in a non-disconnected state (connecting/reconnecting).
+            async function ensureConnected(timeoutMs = 5000) {
+                const State = signalR.HubConnectionState;
+                if (connection.state === State.Connected) return;
+                if (connection.state === State.Disconnected) {
+                    await connection.start();
+                    return;
+                }
+
+                // If connecting/reconnecting, wait until Connected or timeout
+                const startWait = Date.now();
+                while (connection.state !== State.Connected) {
+                    if (Date.now() - startWait > timeoutMs) throw new Error('Timed out waiting for SignalR connection');
+                    await new Promise(r => setTimeout(r, 100));
+                }
+            }
+
+            await ensureConnected();
+            await joinSignalRGroup(activeRoomCode);
+            console.log('Joined SignalR group for room', activeRoomCode);
+        } catch (err) {
+            console.warn('Could not join SignalR group automatically', err);
+        }
+    })();
+    
     const bgImg = new Image();
-    bgImg.src = "../../assets/images/backgrounds/simplePark.jpg";
+    YapperzAPI.getRoomByCode(activeRoomCode).done((room) => {
+        bgImg.src = '../../assets/images/backgrounds/' + room.theme;
+    });
+
     let bgImgLoaded = false;
     bgImg.addEventListener("load", () => { bgImgLoaded = true; });
-    // Avatar model: { id, x, y, vx, vy, color, name, targetX, targetY, bubble, bubbleTime, isChibi, imgIndex }
     const avatars = {};
-    let lastId = 0;
-
-    // Create local player (and some for fun)
-    const me = createAvatar("me", canvas.width / 2, canvas.height / 2);
-    const bri = createAvatar("bri", canvas.width / 2 + 40, canvas.height / 2);
-    const gezi = createAvatar("gezi", canvas.width / 2 + 80, canvas.height / 2);
-    const roni = createAvatar("roni", canvas.width / 2 + 120, canvas.height / 2);
-    $("#me-id").text(me.id);
 
     // keyboard input state for local player
     const input = { left: false, right: false, up: false, down: false };
@@ -77,12 +259,15 @@ $(function () {
         }
     });
 
-    // add random avatars (simulating joins)
-    $("#new-btn").on("click", () => {
-        const a = createAvatar("guest" + (++lastId),
-            Math.random() * (canvas.width - 40) + 20,
-            Math.random() * (canvas.height - 40) + 20,
-        );
+    $("#leave-btn").on("click", () => {
+        // best-effort: notify hub to leave group, then call API and go back
+        leaveSignalRGroup(activeRoomCode)
+            .finally(() => YapperzAPI.leaveRoom(activeRoomCode))
+            .finally(() => {
+                const el = document.getElementById('room-code-overlay');
+                if (el) el.remove();
+                window.location.href = '../../index.html';
+            });
     });
 
     // click to move local player
@@ -100,8 +285,9 @@ $(function () {
     $("#toggle-mute-btn").on("click", function (e) {
         // maybe later after midterm when we have sound effects
         mute = !mute;
-        $(this).attr("title", mute ? "Mute" : "Unmute");
-        $(this).children("i").first().toggleClass("hide-slash", mute);
+        $(this).attr("title", mute ? "Unmute" : "Mute");
+        $(this).children("i").first().toggleClass("hide-slash", !mute);
+        $("#audio-theme").prop("muted", mute);
     });
 
     $("#toggle-names-btn").on("click", function (e) {
@@ -110,8 +296,13 @@ $(function () {
         $(this).children("i").first().toggleClass("hide-slash", showNames);
     });
 
-    $("#invite-btn").on("click", function (e) {
-        showToast({ text: "Room code copied", bgColor: "#F9C972", hideAfter: 3000 });
+    $("#invite-btn").on("click", async function (e) {
+        try {
+            await navigator.clipboard.writeText(activeRoomCode);
+            showToast({ text: "Room code copied", bgColor: "#5C4297", hideAfter: 3000 });
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+        }
     });
 
     $("#toggle-chat-btn").on("click", function (e) {
@@ -159,50 +350,12 @@ $(function () {
         if (e.key === "Enter") {
             const text = chatTextfield.val().trim();
             if (text.length > 0) {
-                showBubble(me, text);
+                // showBubble(me, text);
+                sendMessage(text);
                 chatTextfield.val("");
             }
         }
     });
-
-    // create chat bubble for demonstration RANDOMLY BECAUSE WE HAVE NO BACK END YET
-    setInterval(() => {
-        const arr = Object.values(avatars);
-        if (!arr.length) return;
-        const pickAvatar = arr[Math.floor(Math.random() * arr.length)];
-        if (pickAvatar === me) return; // skip local player
-        phrases = [
-            "Hello!",
-            "Yo Yo!",
-            "How's it going?",
-            "This place is cool!",
-            "What's your favorite game?",
-            "I love Yapperz!",
-            "How are you guys",
-            "mwhahahaha",
-            "Nice to meet you all!",
-            "Have a great day!",
-            "ca bot si kalut?",
-            "Imma touch you!",
-            "i need a job",
-            "whats up?",
-            "i love Yapperz!",
-            ":3",
-            "(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧",
-            "!!!",
-            "AFK getting snacks",
-            "brb petting my cat",
-            "Pixel party anyone?",
-            "Type /dance for moves!",
-            "need coffee asap",
-            "drop your favorite emoji",
-            "this place needs music",
-            "new quest soon?",
-            "best chatroom ever!",
-        ];
-        const pickPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-        showBubble(pickAvatar, pickPhrase);
-    }, 500);
 
     // animation loop
     let last = performance.now();
@@ -216,33 +369,55 @@ $(function () {
     requestAnimationFrame(loop);
 
     // === functions for game ===
-    function createAvatar(name, x, y) {
-        const id = "id_" + Math.random().toString(36).slice(2, 9);
-        var imgIndex = Math.floor(Math.random() * (avatarImgs.length - 3));
+    function loadRoomUsers(roomCode) { // already joined players
+        YapperzAPI.getRoomUsersByRoomCode(roomCode)
+            .done(users => {
+                if (!Array.isArray(users)) {
+                    console.warn("Unexpected room users response", users);
+                    return;
+                }
 
-        // do hiqen pas midtermi </3
-        var isChibi = false;
-        if (name == 'bri') {
-            imgIndex = 7;
-            isChibi = true;
-        }
-        else if (name == 'gezi') {
-            imgIndex = 8;
-            isChibi = true;
-        }
-        else if (name == 'roni') {
-            imgIndex = 9;
-            isChibi = true;
-        }
+                users.forEach((user, index) => {
+                    if (!user) return;
+                    if (user.id === session.id) {
+                        me = createAvatar(user, canvas.width / 2, canvas.height / 2);
+                        return;
+                    }
 
-        const a = {
-            id, name, x, y, vx: 0, vy: 0,
-            targetX: x, targetY: y, speed: 0,
-            bubble: null, bubbleTime: 0, size: 28,
-            // assign a random avatar image index (0 or 1)
-            imgIndex: imgIndex, isChibi: isChibi
+                    const spawn = getSpawnPosition();
+                    createAvatar(user, spawn.x, spawn.y);
+                });
+            })
+            .fail(err => {
+                console.error("Failed to load room users", err);
+            });
+    }
+
+    function getSpawnPosition() {
+        return {
+            x: Math.random() * (canvas.width - 40) + 20,
+            y: Math.random() * (canvas.height - 40) + 20
         };
-        avatars[id] = a;
+    }
+
+    function createAvatar(user, x, y) {
+        const a = {
+            id: user.id,
+            displayName: user.displayName,
+            x,
+            y,
+            vx: 0,
+            vy: 0,
+            targetX: x,
+            targetY: y,
+            speed: 0,
+            bubble: null,
+            bubbleTime: 0,
+            size: 28,
+            avatarPath: user.avatarPath
+        };
+        // console.log(a);
+        avatars[user.id] = a;
         return a;
     }
 
@@ -329,6 +504,10 @@ $(function () {
         }
     }
 
+    function getDisplayName(user) {
+        return user.displayName;
+    }
+
     function render() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -373,26 +552,24 @@ $(function () {
         ctx.ellipse(a.x, a.y + s * 0.8, s * 0.6, s * 0.25, 0, 0, Math.PI * 2);
         ctx.fill();
 
+        const img = new Image();
+        img.src = a.avatarPath;
+
         // draw avatar image (if loaded) centered at avatar position
-        if (typeof a.imgIndex === 'number' && avatarImgs[a.imgIndex] && avatarImgsLoaded[a.imgIndex]) {
-            const img = avatarImgs[a.imgIndex];
-            var drawW = s * 2;
-            var drawH = s * 2.2;
-            if (a.isChibi) {
-                drawW = s * 1.6;
-                drawH = s * 1.8;
-            }
+        // if (typeof a.imgIndex === 'number') {
+            var drawW = s * 3;
+            var drawH = s * 2.6;
             const dx = a.x - drawW / 2;
             const dy = a.y - drawH + s * 0.9;
             ctx.drawImage(img, dx, dy, drawW, drawH);
-        }
+        // }
 
         // name label
         if (showNames) {
             ctx.font = "14px pixelFontMain";
             ctx.textAlign = "center";
             ctx.fillStyle = "#000";
-            ctx.fillText(a.name, a.x, a.y + s * 1.1);
+            ctx.fillText(a.displayName, a.x, a.y + s * 1.1);
         }
 
         // bubble
@@ -441,7 +618,7 @@ $(function () {
             text: opts.text || "",
             showHideTransition: opts.showHideTransition || "fade",
             bgColor: opts.bgColor || "#333",
-            textColor: opts.textColor || "#4E362F",
+            textColor: "#ffffff",
             allowToastClose: false,
             hideAfter: typeof opts.hideAfter === "number" ? opts.hideAfter : 4000,
             stack: 1, // ensure plugin-level stack is 1
