@@ -1,6 +1,7 @@
 $(function () {
     const api = window.YapperzAPI;
-    const DEFAULT_AVATAR = "boy1.png";
+    const DEFAULT_AVATAR_M = "../../assets/images/avatars/boy1.png";
+    const DEFAULT_AVATAR_F = "../../assets/images/avatars/girl1.png";
 
     if (api.getSession()) {
         window.location.href = "../../index.html";
@@ -13,13 +14,15 @@ $(function () {
     const $email = $("#email-input-field");
     const $password = $("#password-input-field");
     const $confpassword = $("#confpassword-input-field");
-    const $checkbox = $(".form-checkbox");
+    const $genderRadios = $("input[name='gender']");
+    const $termsCheckbox = $("#terms-checkbox");
 
     const $usernameErr = $("#usernameErr");
     const $displaynameErr = $("#displaynameErr");
     const $emailErr = $("#emailErr");
     const $passErr = $("#passErr");
     const $confpassErr = $("#confpassErr");
+    const $genderErr = $("#genderErr");
     const $checkboxErr = $("#checkboxErr");
     const $submitBtn = $("#login-signup-button");
 
@@ -37,11 +40,12 @@ $(function () {
         e.preventDefault();
 
         // clear previous errors
-        $username.text("");
+        $usernameErr.text("");
         $displaynameErr.text("");
         $emailErr.text("");
         $passErr.text("");
         $confpassErr.text("");
+        $genderErr.text("");
         $checkboxErr.text("");
 
         let hasError = false;
@@ -50,6 +54,7 @@ $(function () {
         const emailVal = $email.val().trim();
         const passVal = $password.val().trim();
         const confVal = $confpassword.val().trim();
+        const genderVal = $genderRadios.filter(":checked").val();
 
         if (usernameVal.length < 2) {
             $usernameErr.text("Please enter your username (min 2 characters).");
@@ -58,6 +63,11 @@ $(function () {
 
         if (displayNameVal.length < 2) {
             $displaynameErr.text("Please enter your display name (min 2 characters).");
+            hasError = true;
+        }
+
+        if (!genderVal) {
+            $genderErr.text("Please select your gender.");
             hasError = true;
         }
 
@@ -79,7 +89,7 @@ $(function () {
             hasError = true;
         }
 
-        if (!$checkbox.is(":checked")) {
+        if (!$termsCheckbox.is(":checked")) {
             $checkboxErr.text("Please accept the Terms and Conditions.");
             hasError = true;
         }
@@ -89,12 +99,13 @@ $(function () {
         }
 
         setLoading(true);
+        const avatarPath = genderVal === "F" ? DEFAULT_AVATAR_F : DEFAULT_AVATAR_M;
         const payload = {
             username: usernameVal,
             email: emailVal,
             password: passVal,
             displayName: displayNameVal,
-            avatarPath: DEFAULT_AVATAR
+            avatarPath: avatarPath,
         };
 
         // var a = {
