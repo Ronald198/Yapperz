@@ -215,14 +215,14 @@ function renderAvatars() {
         img.src = avatar.src;
         img.alt = 'Avatar';
 
-        // FIXED: Silently handle image errors - don't show console errors
-        img.onerror = function() {
-            // Remove the item from DOM if image doesn't exist
-            if (item.parentNode) {
-                item.parentNode.removeChild(item);
-            }
-            // Don't log errors to console - just silently remove
-        };
+        // // FIXED: Silently handle image errors - don't show console errors
+        // img.onerror = function() {
+        //     // Remove the item from DOM if image doesn't exist
+        //     if (item.parentNode) {
+        //         item.parentNode.removeChild(item);
+        //     }
+        //     // Don't log errors to console - just silently remove
+        // };
         
         item.appendChild(img);
         
@@ -242,13 +242,13 @@ function displayAvatar(src) {
     avatarFrame.classList.remove('empty');
     avatarFrame.innerHTML = `<img src="${src}" alt="Selected Avatar">`;
     
-    // const img = avatarFrame.querySelector('img');
-    // // Silently handle image errors for display avatar
-    // img.onerror = function() {
-    //     avatarFrame.classList.add('empty');
-    //     avatarFrame.innerHTML = '';
-    //     console.warn('Avatar image not found:', src);
-    // };
+    const img = avatarFrame.querySelector('img');
+    // Silently handle image errors for display avatar
+    img.onerror = function() {
+        avatarFrame.classList.add('empty');
+        avatarFrame.innerHTML = '';
+        console.warn('Avatar image not found:', src);
+    };
 }
 
 // Load current user's avatar on page load
@@ -275,7 +275,7 @@ async function loadCurrentAvatar() {
     }
 }
 
-// FIXED: Save avatar function with session update
+//Save avatar function with session update
 async function saveAvatar() {
     if (!selectedAvatar) {
         alert('Please select an avatar first!');
@@ -306,7 +306,7 @@ async function saveAvatar() {
         console.log('Avatar saved successfully!', response);
         alert('Avatar saved successfully!');
         
-        // FIXED: Update the session with the new avatar path
+        // Update the session with the new avatar path
         if (response && response.avatarPath) {
             const updatedSession = api.getSession();
             updatedSession.avatarPath = response.avatarPath;

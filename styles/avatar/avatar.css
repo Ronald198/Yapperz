@@ -356,6 +356,7 @@ body {
 }
 
 .dashboard a:hover {
+    color: aliceblue;
     background-color: var(--border);
     transform: scale(1.05);
 }
