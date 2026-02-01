@@ -12,6 +12,18 @@ const filterThemeMap = {
     'filter4-btn': 'park'
 };
 
+const roomsContainer = document.getElementById('rooms');
+const noRoomsPlaceholder = document.getElementById('no-rooms-placeholder');
+
+function updateRoomsEmptyState() {
+    if (!roomsContainer || !noRoomsPlaceholder) {
+        return;
+    }
+
+    const hasRooms = roomsContainer.querySelectorAll('.room-card').length > 0;
+    noRoomsPlaceholder.style.display = hasRooms ? 'none' : 'flex';
+}
+
 // Get theme from room card's image src
 function getRoomTheme(roomCard) {
     const themeImg = roomCard.querySelector('.theme-image');
@@ -137,6 +149,7 @@ function deleteChatroom(chatroomId) {
             const roomCard = document.querySelector(`[data-room-id="${chatroomId}"]`);
             if (roomCard) {
                 roomCard.remove();
+                updateRoomsEmptyState();
             }
         },
         error: function(xhr, status, error) {
@@ -148,8 +161,10 @@ function deleteChatroom(chatroomId) {
 
 // Helper function to add a room card to the UI
 function addRoomCardToUI(room) {
-    const roomsContainer = document.getElementById('rooms');
-    
+    if (!roomsContainer) {
+        return;
+    }
+
     // Map theme to image
     const themeImages = {
         'desert': 'assets/images/backgrounds/desert.png',
@@ -184,6 +199,7 @@ function addRoomCardToUI(room) {
     `;
     
     roomsContainer.appendChild(roomCard);
+    updateRoomsEmptyState();
 }
 
 // ============ EVENT LISTENERS ============
@@ -221,16 +237,18 @@ document.getElementById('create-room-btn').addEventListener('click', function(e)
 });
 
 // Handle join room button clicks (event delegation)
-document.getElementById('rooms').addEventListener('click', function(e) {
-    if (e.target.classList.contains('join-room-btn')) {
-        const roomCode = e.target.getAttribute('data-room-code');
-        console.log('Joining room with code:', roomCode);
-        
-        // Update the path based on your actual file structure
-        // If lobby.html is in root and chatroom.html is in pages/chatroom/
-        window.location.href = `pages/chatroom/chatroom.html?code=${roomCode}`;
-    }
-});
+if (roomsContainer) {
+    roomsContainer.addEventListener('click', function(e) {
+        if (e.target.classList.contains('join-room-btn')) {
+            const roomCode = e.target.getAttribute('data-room-code');
+            console.log('Joining room with code:', roomCode);
+            
+            // Update the path based on your actual file structure
+            // If lobby.html is in root and chatroom.html is in pages/chatroom/
+            window.location.href = `pages/chatroom/chatroom.html?code=${roomCode}`;
+        }
+    });
+}
 
 // Handle enter room button click (manual room code entry)
 document.getElementById('enter-room-btn').addEventListener('click', function(e) {
@@ -264,15 +282,19 @@ function loadChatrooms() {
             chatrooms.forEach(room => {
                 addRoomCardToUI(room);
             });
+
+            updateRoomsEmptyState();
         },
         error: function(xhr, status, error) {
             console.error('Error loading chatrooms:', error);
             console.error('Make sure you have a GET endpoint in your ChatRoomController');
+            updateRoomsEmptyState();
         }
     });
 }
 
 // Load chatrooms when the page loads
 $(document).ready(function() {
+    updateRoomsEmptyState();
     loadChatrooms();
 });
