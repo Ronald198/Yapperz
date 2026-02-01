@@ -34,9 +34,7 @@
                     <option value="park">Park</option>
                     <option value="temple">Temple</option>
                 </select>
-                <a href="pages/chatroom/chatroom.html">
-                    <button id="create-room-btn">Create</button>
-                </a>
+                <button id="create-room-btn">Create</button>
             </div>
             <button id="enter-room" class="init-buttons" popovertarget="room-enter">Enter Room</button>
             <div id="room-enter" class="popover" popover>
@@ -99,7 +97,7 @@
                         </div>
                     </div>
                     <a href="pages/chatroom/chatroom.html">
-                        <button class="join-room-btn">Join Room</button>
+                        <button class="join-room-btn" data-room-code="ABC123">Join Room</button>
                     </a>
                 </div>
             </div>
@@ -122,7 +120,7 @@
                         </div>
                     </div>
                     <a href="pages/chatroom/chatroom.html">
-                        <button class="join-room-btn" onclick="">Join Room</button>
+                        <button class="join-room-btn" data-room-code="ABCDEF">Join Room</button>
                     </a>
                 </div>
             </div>
@@ -144,7 +142,7 @@
                             <img src="assets/images/backgrounds/simplePark.jpg" alt="theme" class="theme-image">
                         </div>
                     </div>
-                    <button class="join-room-btn" onclick="YapperzAPI.joinRoom('ABCDEF')">Join Room</button>
+                    <button class="join-room-btn" data-room-code="GHI123">Join Room</button>
                 </div>
             </div>
 
