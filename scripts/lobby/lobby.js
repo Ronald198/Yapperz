@@ -81,11 +81,11 @@ filterButtons.forEach(button => {
 
 // Create a new chatroom
 function createChatroom(roomData) {
-    console.log('Sending request to:', `${API_BASE_URL}/ChatRoom`);
+    console.log('Sending request to:', `${API_BASE_URL}/Rooms`);
     console.log('Request data:', roomData);
     
     $.ajax({
-        url: `${API_BASE_URL}/ChatRoom`,
+        url: `${API_BASE_URL}/Rooms`,
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
@@ -96,21 +96,20 @@ function createChatroom(roomData) {
         }),
         success: function(response) {
             console.log('Chatroom created successfully:', response);
-
+            alert(`Room created! Code: ${response.code}`);
             
+            // Add the new room to the UI
             addRoomCardToUI(response);
-
             
+            // Close the popover
             document.getElementById('room-open').hidePopover();
-
             
+            // Clear form fields
             document.getElementById('room-name').value = '';
             document.getElementById('room-description').value = '';
 
-           
-            window.location.href = `pages/chatroom/chatroom.html?code=${response.code}`;
+             window.location.href = `pages/chatroom/chatroom.html?code=${response.code}`;
         },
-
         error: function(xhr, status, error) {
             console.error('Error creating chatroom:', error);
             console.error('Status:', status);
@@ -128,7 +127,7 @@ function deleteChatroom(chatroomId) {
     }
     
     $.ajax({
-        url: `${API_BASE_URL}/ChatRoom/${chatroomId}`,
+        url: `${API_BASE_URL}/Rooms/${chatroomId}`,
         type: 'DELETE',
         success: function(response) {
             console.log('Chatroom deleted successfully:', response);
@@ -146,21 +145,6 @@ function deleteChatroom(chatroomId) {
         }
     });
 }
-//function to delete the room when the last user leaves
-function leaveRoom(roomId, userId) {
-    $.ajax({
-        url: `${API_BASE_URL}/ChatRoom/${roomId}/leave/${userId}`,
-        type: 'POST',
-        success: function () {
-            window.location.href = "/index.html";
-        },
-        error: function (xhr) {
-            console.error(xhr.responseText);
-            window.location.href = "/index.html"; // still leave UI
-        }
-    });
-}
-
 
 // Helper function to add a room card to the UI
 function addRoomCardToUI(room) {
@@ -271,7 +255,7 @@ document.getElementById('enter-room-btn').addEventListener('click', function(e) 
 // Load all chatrooms from the database
 function loadChatrooms() {
     $.ajax({
-        url: `${API_BASE_URL}/ChatRoom`,
+        url: `${API_BASE_URL}/Rooms`,
         type: 'GET',
         success: function(chatrooms) {
             console.log('Chatrooms loaded from database:', chatrooms);
@@ -292,4 +276,3 @@ function loadChatrooms() {
 $(document).ready(function() {
     loadChatrooms();
 });
-
