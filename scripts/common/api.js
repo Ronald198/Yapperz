@@ -135,6 +135,22 @@
         return request(`/Users/${encodeURIComponent(userId)}`);
     }
 
+    // --- NEW FUNCTIONS START ---
+    function updateProfile(userId, userData) {
+        return request(`/Users/update-profile/${encodeURIComponent(userId)}`, {
+            method: "PUT",
+            data: userData
+        });
+    }
+
+    function updateAvatar(userId, userData) {
+        return request(`/Users/update-avatar/${encodeURIComponent(userId)}`, {
+            method: "PUT",
+            data: userData
+        });
+    }
+    // --- NEW FUNCTIONS END ---
+
     function joinRoom(roomCode) {
         userId = getSession().id;
 
@@ -229,6 +245,9 @@
         setSession,
         clearSession,
         getActiveRoom,
-        setActiveRoom
+        setActiveRoom,
+        // --- EXPORT NEW FUNCTIONS ---
+        updateProfile,
+        updateAvatar
     };
 })(window, window.jQuery);
