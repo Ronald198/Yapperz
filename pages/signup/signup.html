@@ -28,8 +28,15 @@
             <div class="pixel-corners">
                 <input type="text" placeholder="Display Name" name="displayname" id="displayname-input-field" class="form-input-field">
             </div>
-            <p class="error" id="diplaynameErr"></p>
-            <br>
+            <p class="error" id="displaynameErr"></p>
+            <div class="gender">
+                <div id="form-checkbox-container">
+                    <p>Gender:</p>
+                    <span>Male</span><input type="radio" class="form-checkbox" name="gender" value="M">
+                    <span>Female</span><input type="radio" class="form-checkbox" name="gender" value="F">
+                </div>
+            </div>
+            <p class="error" id="genderErr"></p>
             <div class="pixel-corners">
                 <input type="email" placeholder="Email" name="email" id="email-input-field" class="form-input-field">
             </div>
@@ -48,7 +55,7 @@
             <br>
             <div class="terms">
                 <div id="form-checkbox-container">
-                    <p>I accept all Terms and Conditions:</p> <input type="checkbox" class="form-checkbox">
+                    <p>I accept all Terms and Conditions:</p> <input type="checkbox" class="form-checkbox" id="terms-checkbox">
                 </div>
             </div>
             <p class="error" id="checkboxErr"></p>
