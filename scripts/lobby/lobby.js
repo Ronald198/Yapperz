@@ -32,7 +32,7 @@ function getRoomTheme(roomCard) {
     if (imgSrc.includes('temple')) return 'temple';
     if (imgSrc.includes('desert')) return 'desert';
     if (imgSrc.includes('sea')) return 'sea';
-    if (imgSrc.includes('Park')) return 'park';
+    if (imgSrc.includes('park')) return 'park';
     
     return null;
 }
@@ -167,10 +167,10 @@ function addRoomCardToUI(room) {
 
     // Map theme to image
     const themeImages = {
-        'desert': 'assets/images/backgrounds/desert.png',
-        'sea': 'assets/images/backgrounds/sea.jpg',
-        'park': 'assets/images/backgrounds/simplePark.jpg',
-        'temple': 'assets/images/backgrounds/temple.png'
+        'desert.jpg': 'assets/images/backgrounds/desert.jpg',
+        'sea.jpg': 'assets/images/backgrounds/sea.jpg',
+        'park.jpg': 'assets/images/backgrounds/park.jpg',
+        'temple.jpg': 'assets/images/backgrounds/temple.jpg'
     };
     
     const roomCard = document.createElement('div');
@@ -211,7 +211,7 @@ document.getElementById('create-room-btn').addEventListener('click', function(e)
     
     const roomName = document.getElementById('room-name').value.trim();
     const roomDescription = document.getElementById('room-description').value.trim();
-    const roomTheme = document.getElementById('room-theme').value;
+    const roomTheme = document.getElementById('room-theme').value + '.jpg';
     const maxPlayers = parseInt(document.getElementById('max-participants').value);
     
     console.log('Create button clicked!', { roomName, roomDescription, roomTheme, maxPlayers });
@@ -242,10 +242,7 @@ if (roomsContainer) {
         if (e.target.classList.contains('join-room-btn')) {
             const roomCode = e.target.getAttribute('data-room-code');
             console.log('Joining room with code:', roomCode);
-            
-            // Update the path based on your actual file structure
-            // If lobby.html is in root and chatroom.html is in pages/chatroom/
-            window.location.href = `pages/chatroom/chatroom.html?code=${roomCode}`;
+            YapperzAPI.joinRoom(roomCode);
         }
     });
 }

@@ -226,10 +226,10 @@ $(function () {
             console.warn('Could not join SignalR group automatically', err);
         }
     })();
-
+    
     const bgImg = new Image();
     YapperzAPI.getRoomByCode(activeRoomCode).done((room) => {
-        bgImg.src = room.theme;
+        bgImg.src = '../../assets/images/backgrounds/' + room.theme;
     });
 
     let bgImgLoaded = false;
