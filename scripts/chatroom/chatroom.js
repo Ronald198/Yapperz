@@ -108,14 +108,14 @@ $(function () {
             if (avatars[user.id]) {
                 // update display name/avatar if needed
                 avatars[user.id].displayName = user.displayName || avatars[user.id].displayName;
-                avatars[user.id].avatarPath = AVATAR_ASSET_BASE + (user.avatarPath || "");
+                avatars[user.id].avatarPath = user.avatarPath;
                 return;
             }
 
             const spawn = getSpawnPosition();
             const a = createAvatar(user, spawn.x, spawn.y);
             // store full avatarPath on created avatar
-            a.avatarPath = AVATAR_ASSET_BASE + (user.avatarPath || "");
+            a.avatarPath = user.avatarPath;
             showToast({ text: `${getDisplayName(user)} joined the room`, bgColor: "#5C4297", hideAfter: 2500 });
         } catch (err) {
             console.error("Error handling NewPlayerJoined", err);
@@ -142,7 +142,6 @@ $(function () {
     var showNames = true;
     var showTextBubbles = true;
     var mute = false;
-    const AVATAR_ASSET_BASE = "../../assets/images/avatars/";
 
     const session = YapperzAPI.getSession();
     if (!session) {
@@ -150,8 +149,16 @@ $(function () {
         return;
     }
 
-    const activeRoomCodeRaw = YapperzAPI.getActiveRoom();
-    const activeRoomCode = activeRoomCodeRaw.code;
+    const activeRoomData = YapperzAPI.getActiveRoom();
+    const activeRoomCode = (() => {
+        if (!activeRoomData) return null;
+        if (typeof activeRoomData === "string") return activeRoomData.trim();
+        if (typeof activeRoomData === "object") {
+            // Prefer .code but fall back to alternate casing when possible
+            return activeRoomData.code || activeRoomData.roomCode || activeRoomData.RoomCode || null;
+        }
+        return null;
+    })();
     if (!activeRoomCode) {
         window.location.href = "../../index.html";
         return;
@@ -222,7 +229,7 @@ $(function () {
 
     const bgImg = new Image();
     YapperzAPI.getRoomByCode(activeRoomCode).done((room) => {
-        bgImg.src = "../../assets/images/backgrounds/" + room.theme;
+        bgImg.src = room.theme;
     });
 
     let bgImgLoaded = false;
@@ -407,7 +414,7 @@ $(function () {
             bubble: null,
             bubbleTime: 0,
             size: 28,
-            avatarPath: AVATAR_ASSET_BASE + user.avatarPath
+            avatarPath: user.avatarPath
         };
         // console.log(a);
         avatars[user.id] = a;
