@@ -120,7 +120,7 @@ function createChatroom(roomData) {
             document.getElementById('room-name').value = '';
             document.getElementById('room-description').value = '';
 
-             window.location.href = `pages/chatroom/chatroom.html?code=${response.code}`;
+            YapperzAPI.joinRoom(response.code)
         },
         error: function(xhr, status, error) {
             console.error('Error creating chatroom:', error);

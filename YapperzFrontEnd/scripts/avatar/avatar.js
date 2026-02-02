@@ -1,6 +1,12 @@
 // Initialize API reference
 const api = window.YapperzAPI;
 
+// 1. Check if user is logged in
+let session = api.getSession();
+if (!session) {
+    window.location.href = "../login/login.html";
+}
+
 // all available avatars in the system  
 const avatars = [
     // each avatar has a gender, hair color, and clothing style 
