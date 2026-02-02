@@ -1,4 +1,4 @@
-# Yapperz
+ Yapperz
 A chatroom.
 (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧
 
@@ -10,3 +10,13 @@ A chatroom.
 ![alt Yapperz](https://github.com/Ronald198/Yapperz/blob/main/YapperzFrontEnd/assets/images/YapperzProfile.jpeg?raw=true)
 # Lobby page:
 ![alt Yapperz](https://github.com/Ronald198/Yapperz/blob/main/YapperzFrontEnd/assets/images/YapperzLobby.jpeg?raw=true)
+
+# Technologies used:
+## Front-end:
+- HTML
+- CSS
+- Js, jQuery
+## Back-end:
+- ASP.NET Core
+- .net 9.0
+- MariaDB 10.4.28
