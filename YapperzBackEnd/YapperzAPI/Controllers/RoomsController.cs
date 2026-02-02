@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 using YapperzAPI.Models;
-using YapperzAPI.DTOs;
 using YapperzAPI.Data;
+using YapperzAPI.Extensions;
+using YapperzAPI.Dtos.Chatroom;
 
 namespace YapperzAPI.Controllers
 {
@@ -20,18 +20,20 @@ namespace YapperzAPI.Controllers
 
         // GET: api/Rooms
         [HttpGet]
-        public async Task<ActionResult<List<ChatRoom>>> GetAllRooms()
+        public async Task<ActionResult<List<ChatroomDto>>> GetAllRooms()
         {
             var chatrooms = await _context.Chatrooms
                 .Include(c => c.Users)
                 .ToListAsync();
+
+            var chatroomDtos = chatrooms.Select(c => c.ToDto()).ToList();
             
-            return Ok(chatrooms);
+            return Ok(chatroomDtos);
         }
 
         // GET: api/Rooms/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<ChatRoom>> GetRoomById(int id)
+        public async Task<ActionResult<ChatroomDto>> GetRoomById(int id)
         {
             var chatroom = await _context.Chatrooms
                 .Include(c => c.Users)
@@ -42,12 +44,12 @@ namespace YapperzAPI.Controllers
                 return NotFound();
             }
 
-            return chatroom;
+            return chatroom.ToDto();
         }
 
         // POST: api/Rooms
         [HttpPost]
-        public async Task<ActionResult<ChatRoom>> CreateRoom([FromBody] ChatRoomDto roomDto)
+        public async Task<ActionResult<ChatRoom>> CreateRoom([FromBody] ChatroomDto roomDto)
         {
             if (!ModelState.IsValid)
             {
@@ -119,21 +121,21 @@ namespace YapperzAPI.Controllers
 }
 
 // ChatRoomDto.cs
-namespace YapperzAPI.DTOs
-{
-    public class ChatRoomDto
-    {
-        [Required]
-        [StringLength(100, MinimumLength = 1)]
-        public required string Name { get; set; }
+// namespace YapperzAPI.DTOs
+// {
+//     public class ChatRoomDto
+//     {
+//         [Required]
+//         [StringLength(100, MinimumLength = 1)]
+//         public required string Name { get; set; }
 
-        [StringLength(500)]
-        public string? Description { get; set; }
+//         [StringLength(500)]
+//         public string? Description { get; set; }
 
-        [Required]
-        public required string Theme { get; set; }
+//         [Required]
+//         public required string Theme { get; set; }
 
-        [Range(2, 100)]
-        public int MaxPlayers { get; set; } = 10;
-    }
-}
+//         [Range(2, 100)]
+//         public int MaxPlayers { get; set; } = 10;
+//     }
+// }
